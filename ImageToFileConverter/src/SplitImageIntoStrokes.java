@@ -2,42 +2,56 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
+
 
 public class SplitImageIntoStrokes {
 
-    // This method returns a 1 dimentional array -
-    // 1 color number
-    // 2 brush number
-    // 3 represents line number
-    // 4 represent start X [0] and start Y [1]
-    // 5 represent end X [0] and end Y [1]
+    private int totalNumberOfLines = 0;
 
-    public int[][][][][] splitImage(BufferedImage image, ArrayList<Color> colors) {
+    public int[][][] splitImage(BufferedImage image, ArrayList<Color> colors, ImageDisplay jFrame) {
+
+        totalNumberOfLines = 0;
+
+        System.out.println("Number of colors " + colors.size());
 
         // Make sure that colors are added in order
-
-        int[][][][][] result = new int[colors.size()][][][][];
+        int[][][] result = new int[colors.size()][][];
 
         for(int a = 0; a < colors.size(); a++){
-            result [a] [0] = splitSingleColor(image,colors.get(0));
+            result [a] = new int [1][];
+            result [a][0] = splitSingleColor(image,colors.get(a), jFrame);
         }
+
+        System.out.println("totalNumberOfLines" + totalNumberOfLines);
 
         return result;
     }
 
-    private int[][][] splitSingleColor(BufferedImage image, Color color) {
+    private int[] splitSingleColor(BufferedImage image, Color color, ImageDisplay jFrame) {
 
-        ArrayList<int[][]> allLines = new ArrayList<>();
+        Graphics graphics = image.getGraphics();
 
-        while (getRandomDotCoordinates(image, color.getRGB()) != null) {
-            int[] randomDot = getRandomDotCoordinates(image, color.getRGB());
-            int[][] line = drawRandomLine(randomDot, image, color.getRGB());
+        ArrayList<int []> allLines = new ArrayList<>();
+
+        int[] randomDotCoordinates = getRandomDotCoordinates(image, color.getRGB());
+        //System.out.println("randomDotCoordinates" + randomDotCoordinates);
+        while (randomDotCoordinates != null) {
+
+            int[] line = drawRandomLine(randomDotCoordinates, image, color.getRGB(),graphics);
             allLines.add(line);
-
+            randomDotCoordinates = getRandomDotCoordinates(image, color.getRGB());
+            totalNumberOfLines++;
         }
 
-        return listTo3DArray(allLines);
+        System.out.println("all lines" + allLines.size());
+
+        Collections.sort(allLines, Comparator.comparingInt((int[] line) -> line[0]).thenComparingInt(line -> line[1]));
+
+
+        return convertToFlatArray(allLines);
     }
 
 
@@ -50,7 +64,7 @@ public class SplitImageIntoStrokes {
         // Collect all the coordinates of pixels with the specified color
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                int pixelColor = image.getRGB(x, y) & 0xFFFFFF; // Ignore alpha channel
+                int pixelColor = image.getRGB(x, y);
 
                 if (pixelColor == targetColor) {
                     int[] coordinates = {x, y};
@@ -61,6 +75,8 @@ public class SplitImageIntoStrokes {
 
         if (dots.isEmpty()) {
             // No pixels with the specified color found
+
+
             return null;
         }
 
@@ -68,10 +84,13 @@ public class SplitImageIntoStrokes {
         Random random = new Random();
         int[] randomDot = dots.get(random.nextInt(dots.size()));
 
+
+       // System.out.println("Dots"+dots.size());
+
         return randomDot;
     }
 
-    public static int[][] drawRandomLine(int[] startPoint, BufferedImage image, int targetColor) {
+    public static int[] drawRandomLine(int[] startPoint, BufferedImage image, int targetColor,Graphics graphics) {
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -88,24 +107,25 @@ public class SplitImageIntoStrokes {
         int endY = startY;
 
         // Check if the starting point is on the specified color
-        if ((image.getRGB(startX, startY) & 0xFFFFFF) != targetColor) {
+        if ((image.getRGB(startX, startY)) != targetColor) {
             // If not on the specified color, return null (failed to draw a line)
             return null;
         }
 
-        // Draw the line on the image
-        Graphics2D g2d = (Graphics2D) image.getGraphics();
-        g2d.setColor(new Color(targetColor));
+        // Incorrect !!!
 
         Random random = new Random();
 
+        // Randomly choose one of the adjacent pixels
+        int direction = random.nextInt(8);
+
+        int oldEndX = endX;
+        int oldEndY = endY;
         // Continue extending the line until a point off the specified color is reached
         while (image.getRGB(endX, endY) == targetColor) {
-            // Draw a dot at the current position
-            g2d.drawLine(endX, endY, endX, endY);
 
-            // Randomly choose one of the adjacent pixels
-            int direction = random.nextInt(8); // 8 possible directions (top, bottom, left, right, and diagonals)
+            oldEndX = endX;
+            oldEndY = endY;
 
             switch (direction) {
                 case 0 -> endY--; // Up
@@ -131,26 +151,33 @@ public class SplitImageIntoStrokes {
             }
 
             // Ensure the new position is within the image bounds
-            endX = Math.max(0, Math.min(endX, width - 1));
-            endY = Math.max(0, Math.min(endY, height - 1));
+
+            if(endX<0 || endX >=width || endY<0 || endY >=height ){
+                endX = oldEndX;
+                endY = oldEndY;
+                break;
+            }
         }
 
-        // Return the line coordinates
+        graphics.setColor(StaticValues.defaultColor);
+        // Draw a dot at the current position
+        graphics.drawLine(startX, startY, endX, endY);
 
-        g2d = (Graphics2D) image.getGraphics();
-        g2d.setColor(StaticValues.defaultColor);
-
-        return new int[][]{{startX, startY}, {endX, endY}};
+        return new int[]{startX, startY, endX, endY};
     }
 
-    public int[][][] listTo3DArray(ArrayList<int[][]> list) {
-        int size = list.size();
-        int[][][] array3D = new int[size][][];
+    private static int[] convertToFlatArray(ArrayList<int[]> lines) {
+        int totalLength = lines.size() * 4; // Each line has 4 values
+        int[] flatArray = new int[totalLength];
 
-        for (int i = 0; i < size; i++) {
-            array3D[i] = list.get(i);
+        int index = 0;
+        for (int[] line : lines) {
+            for (int value : line) {
+                flatArray[index++] = value;
+            }
         }
-        return array3D;
+
+        return flatArray;
     }
 
 }

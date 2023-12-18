@@ -1,0 +1,15 @@
+
+Сделать 2 линейки - одну для Нью Йорка, другую местную
+
+
+Save all designs - make an option to generate different strokes for each delign - so they all look different (Slight variations)
+
+Number all designs and save only the best 
+
+
+
+**** 
+
+I can blend blur only light colors but keep dark colors not blurred 
+
+Create list for light and dark colors 

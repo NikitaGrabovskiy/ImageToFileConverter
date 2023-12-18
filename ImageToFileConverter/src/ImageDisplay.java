@@ -12,38 +12,50 @@ public class ImageDisplay extends JFrame {
 
 
         // Change github pass
+        // Add everything to repo - photos, documents, arduino scripts
+        // Сделать разный нажим  чтобы не было вида механических линий
+        // Calculate how many lines needs to be drawn
+        // Not to create graphics every time but just create a single one
+
+
+        // Convert to 3 dimentional array with all beginning and ends in a single array
         // Next thing - draw image from [][][][][] to test if it is working (one color random to see the lines)
         // Start motor
         // Create a code on microprocesser to run code
 
 
+/*
+   TODO later:
+     1.  find a square that cover area of one color only and use to to find smaller square
+     for large strokes only and dra 2 lines on left right or top bottom depends on directions -
+     1.  And a small spray pipe that will randomly spray light gray or light brown colors on brach -
+      this way I can get a different tints of colors
+     1.
+*/
 
 
+    public JLabel getLabel() {
+        return label;
+    }
 
+    public void setLabel(JLabel label) {
+        this.label = label;
+    }
 
-
-
-
-
-
-
-
-
-
-    private JLabel label;
+    public JLabel label;
 
     public ImageDisplay() {
         // Set up the JFrame
         setTitle("Image Display");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 800);
+        setSize(1200, 1200);
 
         // Create a label to display the image
         label = new JLabel();
         add(label);
 
         // Choose the image file path
-        String imagePath = "/Users/nikita/Desktop/Documents/BusinessIdeas/RobotArtist/Designs/1.jpg";
+        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/2.png";
 
         // Read and display the image
         displayImage(imagePath);
@@ -55,12 +67,24 @@ public class ImageDisplay extends JFrame {
             BufferedImage image = ImageIO.read(new File(imagePath));
 
 
-            image = resizeImage(image, 300, 300);
+            image = resizeImage(image, 100, 150);
             //image = posterizeImage(image,3);
 
-            ArrayList<Color> targetColors = new ArrayList<>();
 
             image = convertToClosestColors(image,StaticValues.main18Colors);
+
+            SplitImageIntoStrokes splitImageIntoStrokes = new SplitImageIntoStrokes();
+
+            int [][][] lines = splitImageIntoStrokes.splitImage(image,StaticValues.main18Colors,this);
+
+            //print3DArray(lines);
+
+            image = ImageDrawerFromArrayOfLines.drawImageFromArrays(lines,image.getWidth(),image.getHeight(),StaticValues.main18Colors);
+
+           // System.out.println(lines[0].length);
+            //System.out.println(lines[0][0].length);
+
+           image = magnifyPixels(image,4);
 
             // Set the image on the label
             label.setIcon(new ImageIcon(image));
@@ -134,5 +158,48 @@ public class ImageDisplay extends JFrame {
         return Math.sqrt(redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff);
     }
 
+    public static void print3DArray(int[][][] array) {
+        for (int i = 0; i < array.length; i++) {
+            System.out.println("Array " + i + ":");
+            for (int j = 0; j < array[i].length; j++) {
+                System.out.print("  Inner Array " + j + ": [");
+                for (int k = 0; k < array[i][j].length; k++) {
+                    System.out.print(array[i][j][k]);
+                    if (k < array[i][j].length - 1) {
+                        System.out.print(", ");
+                    }
+                }
+                System.out.println("]");
+            }
+        }
+    }
+
+    public static BufferedImage magnifyPixels(BufferedImage originalImage, int squareSize) {
+        int originalWidth = originalImage.getWidth();
+        int originalHeight = originalImage.getHeight();
+
+        int magnifiedWidth = originalWidth * squareSize;
+        int magnifiedHeight = originalHeight * squareSize;
+
+        BufferedImage magnifiedImage = new BufferedImage(magnifiedWidth, magnifiedHeight, BufferedImage.TYPE_INT_ARGB);
+
+        for (int y = 0; y < originalHeight; y++) {
+            for (int x = 0; x < originalWidth; x++) {
+                int rgb = originalImage.getRGB(x, y);
+
+                // Draw a square for each pixel
+                for (int i = 0; i < squareSize; i++) {
+                    for (int j = 0; j < squareSize; j++) {
+                        int newX = x * squareSize + i;
+                        int newY = y * squareSize + j;
+
+                        magnifiedImage.setRGB(newX, newY, rgb);
+                    }
+                }
+            }
+        }
+
+        return magnifiedImage;
+    }
 
 }
