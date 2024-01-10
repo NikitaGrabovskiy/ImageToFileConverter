@@ -7,15 +7,100 @@ public class StaticValues {
     // that will mean color
 
     public static Color defaultColor = new Color(1, 1, 1);
-    static ArrayList<Color> main18Colors = new ArrayList<>();
+
+
+    static ArrayList<Color> perfectColors = new ArrayList<>();
+
+    static ArrayList<Color> main18Colors = perfectColors;
 
     static {
        // addCommonlyUsedColors();
       //  adjustColors();
+       addPerfectColors();
+
+
+
+
     }
 
-    // Method to add 36 commonly used colors to the list
- /*   public static void addCommonlyUsedColors() {
+
+    // 4 sets of colors - Each color has its own name - and can be changed to a different tint
+    //  total 33 colors
+
+
+
+    // 1 - regular - 12
+    // 2 - dark with - 8
+    // 3 - light with - 8
+    // 4 - bright acid colors - 5
+
+    public static void addPerfectColors(){
+
+        // Not painted
+        perfectColors.add(new Color(255, 255, 255));  // White
+        
+
+        // First set - regular not bright
+        perfectColors.add(new Color(0, 0, 0));        // Black
+        perfectColors.add(new Color(176, 26, 26));      // Red
+        perfectColors.add(new Color(0, 161, 0));        // Green
+        perfectColors.add(new Color(34, 102, 250));      // Blue
+        perfectColors.add(new Color(255, 255, 0));       // Yellow
+        perfectColors.add(new Color(255, 165, 0));      // Orange
+        perfectColors.add(new Color(141, 43, 141));     // Purple
+        perfectColors.add(new Color(128, 128, 128));    // Gray
+        perfectColors.add(new Color(0, 168, 168));      // Teal
+        perfectColors.add(new Color(166, 166, 0));      // Olive
+        perfectColors.add(new Color(139, 68, 19));      // Brown
+        perfectColors.add(new Color(252, 122, 240));    // pink
+
+        // Second set - dark (No need for dark yellow, orange, pink)
+
+        perfectColors.add(new Color(91, 1, 1));      // Dark Red
+        perfectColors.add(new Color(1, 93, 45));     // Dark Green
+        perfectColors.add(new Color(5, 5, 93));      // Navy
+        perfectColors.add(new Color(86, 1, 86));      // Dark purple
+        perfectColors.add(new Color(50, 50, 50));      // Dark grey
+        perfectColors.add(new Color(2, 84, 84));    // Dark Teal
+        perfectColors.add(new Color(89, 89, 1));    // Dark Olive
+        perfectColors.add(new Color(68, 35, 19));    // Dark Brown
+
+        // Third set - light (No need for Purple, olive)
+
+        perfectColors.add(new Color(253, 112, 112));      //Light Red
+        perfectColors.add(new Color(201, 248, 201));      // Green
+        perfectColors.add(new Color(134, 200, 248));    // Medium Blue
+        perfectColors.add(new Color(253, 253, 196));    // Yellow
+        perfectColors.add(new Color(252, 194, 156));    // Orange
+        perfectColors.add(new Color(222, 112, 29));      // Brown
+        perfectColors.add(new Color(189, 189, 189));  // Gray
+        perfectColors.add(new Color(243, 184, 232));  // pink
+
+        // Forth set - bright acid colors
+        perfectColors.add(new Color(0, 255, 0));      // Acid Green
+        perfectColors.add(new Color(255, 0, 0));      // Acid Red
+        perfectColors.add(new Color(232, 0, 232));    // Acid Purple
+        perfectColors.add(new Color(0, 0, 255));      // Acid Blue
+        perfectColors.add(new Color(0, 255, 255));    // Acid Teal
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static void addCommonlyUsedColors() {
+
+
+
         main18Colors.add(new Color(255, 255, 255));  // White
         main18Colors.add(new Color(0, 0, 0));        // Black
         main18Colors.add(new Color(255, 0, 0));      // Red
@@ -52,7 +137,6 @@ public class StaticValues {
         main18Colors.add(new Color(255, 0, 255));    // Fuchsia
         main18Colors.add(new Color(0, 255, 255));    // Aqua
     }
-*/
 
 
 
@@ -72,39 +156,41 @@ public class StaticValues {
     static Color color17 = new Color(183, 183, 225);
     static Color color18 = new Color(255, 255, 255);
 
+
     static  Color color26 = new Color(255, 195, 253);
     static  Color color27 = new Color(255, 137, 253);
-
     static Color color1 = new Color(255, 111, 111);
     static  Color color2 = new Color(255,0, 0);
+    static  Color color36 = new Color(110, 28, 65);
     static Color color15 = new Color(125,0, 0);
+    static  Color color12 = new Color(103, 0, 131);
+    static  Color color35 = new Color(64, 29, 117);
     static Color color30 =  new Color(255, 0, 255);    // Magenta
     static Color color13 = new Color(171, 00, 255);
     static  Color color14 = new Color(80, 00, 255);
-    static  Color color12 = new Color(103, 0, 131);
-    static  Color color35 = new Color(64, 29, 117);
 
+    static  Color color33 = new Color(236, 142, 34);
     static  Color color19 = new Color(255, 194, 0);
     static  Color color20 = new Color(255, 238, 6, 255);
     static  Color color21 = new Color(248, 246, 208);
     static  Color color22 = new Color(211, 182, 103);
     static  Color color23 = new Color(145, 110, 0);
     static  Color color24 = new Color(100, 72, 11, 255);
-
+    static  Color color28 =   new Color(128, 128, 0);    // Olive
     static  Color color3 = new Color(192, 255, 190);
     static Color color4 = new Color(0, 255, 0);
     static Color color5 = new Color(17, 162, 0);
     static  Color color6 = new Color(85, 255, 229);
-    static Color color7 = new Color(0, 220, 206);
     static  Color color8 = new Color(10, 147, 147);
+    static  Color color34 = new Color(29, 117, 29);
     static Color color9 = new Color(118, 210, 255);
     static  Color color10 = new Color(0, 128, 255);
     static  Color color11 = new Color(7, 70, 255);
-    static  Color color33 = new Color(236, 142, 34);
-    static  Color color34 = new Color(29, 117, 29);
-    static  Color color36 = new Color(110, 28, 65);
+    static Color color7 = new Color(2, 35, 121);
 
 
+
+/*
 
     static {
         main18Colors.add(color1);
@@ -134,7 +220,7 @@ public class StaticValues {
         main18Colors.add(color25);
         main18Colors.add(color26);
         main18Colors.add(color27);
-       // main18Colors.add(color28);
+        main18Colors.add(color28);
         main18Colors.add(color29);
         main18Colors.add(color30);
         main18Colors.add(color31);
@@ -144,6 +230,7 @@ public class StaticValues {
         main18Colors.add(color35);
         main18Colors.add(color36);
     }
+*/
 
 
 

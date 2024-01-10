@@ -11,17 +11,12 @@ public class ImageDisplay extends JFrame {
     // TODO by priority :
 
 
+        // Skip white
+        // Do not use white paint
         // Change github pass
-        // Add everything to repo - photos, documents, arduino scripts
         // Сделать разный нажим  чтобы не было вида механических линий
         // Calculate how many lines needs to be drawn
-        // Not to create graphics every time but just create a single one
-
-
         // Convert to 3 dimentional array with all beginning and ends in a single array
-        // Next thing - draw image from [][][][][] to test if it is working (one color random to see the lines)
-        // Start motor
-        // Create a code on microprocesser to run code
 
 
 /*
@@ -55,7 +50,7 @@ public class ImageDisplay extends JFrame {
         add(label);
 
         // Choose the image file path
-        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/2.png";
+        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/13.jpg";
 
         // Read and display the image
         displayImage(imagePath);
