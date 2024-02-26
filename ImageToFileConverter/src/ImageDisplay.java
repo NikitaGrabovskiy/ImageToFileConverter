@@ -1,23 +1,28 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import javax.imageio.ImageIO;
 
 public class ImageDisplay extends JFrame {
 
     // TODO by priority :
 
+    // Make it generate 50 different options for the same image with different tints and colors and choose the test
+    // And generate corresponding array
 
         // Skip white
-        // Do not use white paint
         // Change github pass
         // Сделать разный нажим  чтобы не было вида механических линий
         // Calculate how many lines needs to be drawn
-        // Convert to 3 dimentional array with all beginning and ends in a single array
 
+
+    /*
+   TODO different ways to split image into colors:
+   1. Make threshold with random colors
+   1. Find cloases color by red, green or blue (Randomly) - if colors are equal - check the second largest color
+   1. Make slight change colors (increase by 1 or decrease by 1) when in with or langth (Good for pictures with monotinic colors)
+
+*/
 
 /*
    TODO later:
@@ -44,37 +49,35 @@ public class ImageDisplay extends JFrame {
         setTitle("Image Display");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 1200);
-
         // Create a label to display the image
         label = new JLabel();
         add(label);
 
+        int imageNumber = 30;
+
         // Choose the image file path
-        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/13.jpg";
+        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/";
+
+        BufferedImage image = Util.getImageFromFile(imagePath,imageNumber);
 
         // Read and display the image
-        displayImage(imagePath);
+        displayImage(image);
     }
 
-    private void displayImage(String imagePath) {
-        try {
-            // Read the image from the file
-            BufferedImage image = ImageIO.read(new File(imagePath));
-
+    private void displayImage(BufferedImage image) {
 
             image = resizeImage(image, 100, 150);
             //image = posterizeImage(image,3);
 
-
-            image = convertToClosestColors(image,StaticValues.main18Colors);
+            image = convertToClosestColors(image,StaticValues.perfectColors);
 
             SplitImageIntoStrokes splitImageIntoStrokes = new SplitImageIntoStrokes();
 
-            int [][][] lines = splitImageIntoStrokes.splitImage(image,StaticValues.main18Colors,this);
+            int [][][] lines = splitImageIntoStrokes.splitImage(image,StaticValues.perfectColors,this);
 
             //print3DArray(lines);
 
-            image = ImageDrawerFromArrayOfLines.drawImageFromArrays(lines,image.getWidth(),image.getHeight(),StaticValues.main18Colors);
+            image = ImageDrawerFromArrayOfLines.drawImageFromArrays(lines,image.getWidth(),image.getHeight(),StaticValues.perfectColors);
 
            // System.out.println(lines[0].length);
             //System.out.println(lines[0][0].length);
@@ -84,9 +87,6 @@ public class ImageDisplay extends JFrame {
             // Set the image on the label
             label.setIcon(new ImageIcon(image));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void main(String[] args) {
@@ -196,5 +196,6 @@ public class ImageDisplay extends JFrame {
 
         return magnifiedImage;
     }
+
 
 }

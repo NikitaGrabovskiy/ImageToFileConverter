@@ -3,6 +3,21 @@ import java.util.ArrayList;
 
 public class StaticValues {
 
+    // Ways to change image :
+    // 1 Change image before splitting
+    // 2 Change after
+    // Generate 100 random designs - and select the best one
+
+
+
+
+
+
+
+
+
+
+
     // Make sure that colors are added in order - it will be the first parameter
     // that will mean color
 
@@ -33,6 +48,7 @@ public class StaticValues {
     // 2 - dark with - 8
     // 3 - light with - 8
     // 4 - bright acid colors - 5
+    // 5 - 2 extra grey
 
     public static void addPerfectColors(){
 
@@ -73,7 +89,7 @@ public class StaticValues {
         perfectColors.add(new Color(253, 253, 196));    // Yellow
         perfectColors.add(new Color(252, 194, 156));    // Orange
         perfectColors.add(new Color(222, 112, 29));      // Brown
-        perfectColors.add(new Color(189, 189, 189));  // Gray
+        perfectColors.add(new Color(213, 213, 213));  // Gray
         perfectColors.add(new Color(243, 184, 232));  // pink
 
         // Forth set - bright acid colors
@@ -82,6 +98,10 @@ public class StaticValues {
         perfectColors.add(new Color(232, 0, 232));    // Acid Purple
         perfectColors.add(new Color(0, 0, 255));      // Acid Blue
         perfectColors.add(new Color(0, 255, 255));    // Acid Teal
+
+        // 2 extra gray colors (Use sometimes)
+        perfectColors.add(new Color(169, 169, 169));  // Gray between light and regular
+        perfectColors.add(new Color(77, 77, 77));    // Grey between regular and dark
 
     }
 
