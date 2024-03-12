@@ -47,16 +47,33 @@ void loop() {
 
 
 
-  // retracts the actuator
+moveBrush();
+
+}
+
+
+
+void moveBrush(){
+
+  
+   // retracts the actuator
   digitalWrite(BRUSH_ACTUATOR_PIN_1, LOW);
   digitalWrite(BRUSH_ACTUATOR_PIN_2, HIGH);
 
-  //delay(20000); // actuator will stop retracting automatically when reaching the limit
+  int startTime = millis(); 
+  while (millis() - startTime < 1000) { 
+  }
 
-// extend the actuator
+  // extend the actuator
   digitalWrite(BRUSH_ACTUATOR_PIN_1, HIGH);
   digitalWrite(BRUSH_ACTUATOR_PIN_2, LOW);
 
-  //delay(20000); // actuator will stop extending automatically when reaching the limit
+    startTime = millis(); 
+  while (millis() - startTime < 1000) { 
+  }
 
-}
+    // extend the actuator
+  digitalWrite(BRUSH_ACTUATOR_PIN_1, LOW);
+  digitalWrite(BRUSH_ACTUATOR_PIN_2, LOW);
+
+  }
