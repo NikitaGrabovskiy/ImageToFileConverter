@@ -9,41 +9,84 @@ import java.util.Random;
 
 public class SplitImageIntoStrokes {
 
-    private int totalNumberOfLines = 0;
+/*    TODO - change to use 10 lines at a time - so it will only contain 10 points that needs
+    to be connected one after another - this way we need to put 2 time less numbers
 
-    public int[][][] splitImage(BufferedImage image, ArrayList<Color> colors, ImageDisplay jFrame) {
+    Format should be just
+    C1DL12-15,43-22L55-5100D,P20,P21,C2 12,13,22
 
-        totalNumberOfLines = 0;
+    C1 - color number
+    L - single line - paint without lifting brush
+    D - new pait dip required
+    P - draw a single point
+
+    No need to mention colors that are not precent
+
+    All the single dots needs to be marked as P12 and they should be as close as possibe to one another and will be
+    painted at the end or at the beginning
+
+    The should be limit to number of combined line length
+
+    L - mean line
+
+    Amount of points that can be painted at one time will be controlled on arduino
+    */
+
+
+
+    public String splitImage(BufferedImage image, ArrayList<Color> colors, ImageDisplay jFrame) {
 
         System.out.println("Number of colors " + colors.size());
 
-        // Make sure that colors are added in order
-        int[][][] result = new int[colors.size()][][];
+        StringBuffer result = new StringBuffer();
 
         for(int a = 0; a < colors.size(); a++){
-            result [a] = new int [1][];
-            result [a][0] = splitSingleColor(image,colors.get(a), jFrame);
+             result.append(splitSingleColor(image,colors.get(a),a, jFrame));
         }
 
-        System.out.println("totalNumberOfLines" + totalNumberOfLines);
-
-        return result;
+        return result.toString();
     }
 
-    private int[] splitSingleColor(BufferedImage image, Color color, ImageDisplay jFrame) {
+    private int[] splitSingleColor(BufferedImage image, Color color, int colorNumber, ImageDisplay jFrame) {
 
+        int maxDipLength = 50;
         Graphics graphics = image.getGraphics();
 
-        ArrayList<int []> allLines = new ArrayList<>();
+        StringBuffer linesAndDotsForASingleColor = new StringBuffer("C"+colorNumber+"D");
+        StringBuffer singleLine = new StringBuffer("L");
+        int dipLength = 0;
+        int [] previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
 
-        int[] randomDotCoordinates = getRandomDotCoordinates(image, color.getRGB());
-        //System.out.println("randomDotCoordinates" + randomDotCoordinates);
-        while (randomDotCoordinates != null) {
+        //ArrayList<int []> allLines = new ArrayList<>();
 
-            int[] line = drawRandomLine(randomDotCoordinates, image, color.getRGB(),graphics);
-            allLines.add(line);
-            randomDotCoordinates = getRandomDotCoordinates(image, color.getRGB());
-            totalNumberOfLines++;
+        while (true) {    ///  Change this condition
+
+            int[] line = drawRandomLine(new int[]{previousCoordinates[2],previousCoordinates[3]}, image, color.getRGB(),graphics);
+
+            if(line == null){
+                linesAndDotsForASingleColor.append(singleLine);
+                previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
+                if (previousCoordinates == null){
+                    break;
+                }
+                singleLine = new StringBuffer("L"+previousCoordinates[2]+"-"+previousCoordinates[3]);
+                continue;
+            }
+
+            dipLength+=calculateLengthOfLine(line);
+
+            if(dipLength > maxDipLength){
+                linesAndDotsForASingleColor.append("D");
+                singleLine = null;
+            }
+
+            //singleLine.append(line[0]+"-"+line[1]+","+line[2]+"-"+line[3]);
+
+            singleLine.append(","+line[2]+"-"+line[3]);
+            previousCoordinates = line;
+
+            //STORE SINGLE DOTS IN AN ARRAY AND DRAW THEM AT THE END (Or attach them in the beggining)
+
         }
 
         System.out.println("all lines" + allLines.size());
@@ -75,8 +118,6 @@ public class SplitImageIntoStrokes {
 
         if (dots.isEmpty()) {
             // No pixels with the specified color found
-
-
             return null;
         }
 
@@ -84,10 +125,7 @@ public class SplitImageIntoStrokes {
         Random random = new Random();
         int[] randomDot = dots.get(random.nextInt(dots.size()));
 
-
-       // System.out.println("Dots"+dots.size());
-
-        return randomDot;
+        return new int[]{0, 0, randomDot[0], randomDot[1]};
     }
 
     public static int[] drawRandomLine(int[] startPoint, BufferedImage image, int targetColor,Graphics graphics) {
@@ -178,6 +216,13 @@ public class SplitImageIntoStrokes {
         }
 
         return flatArray;
+    }
+
+    public int calculateLengthOfLine(int[] line) {
+        // Calculate the length as a double
+        double length = Math.sqrt(Math.pow(line [2] - line[0], 2) + Math.pow(line[3] - line[1], 2));
+        // Return the length as an integer (rounded)
+        return (int) Math.round(length);
     }
 
 }

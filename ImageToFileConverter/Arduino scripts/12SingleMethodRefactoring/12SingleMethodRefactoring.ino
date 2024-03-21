@@ -1,4 +1,25 @@
 
+
+
+ // float yIncrement = xSteps/ySteps;
+  //float nextYIncrement = 0;
+
+  //for (long i = 0; i < totalSteps; i++) {
+      
+  //  digitalWrite(3,LOW);
+  //  digitalWrite(3,HIGH);
+    
+  //  if(i>nextYIncrement){
+
+   // digitalWrite(5,LOW);
+   // digitalWrite(5,HIGH);
+   // nextYIncrement+=yIncrement;
+   // }
+
+   // delayMicroseconds(100);
+  //  }
+
+
 // CODE for testin c++ 
 // Online C++ compiler to run C++ program online
 //#include <iostream>
@@ -47,19 +68,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 const int BRUSH_ACTUATOR_DIRECTION = 11; 
 const int BRUSH_ACTUATOR_PIN_1 = 10; 
 const int BRUSH_ACTUATOR_PIN_2 = 9;
@@ -69,6 +77,13 @@ const float STEPS_IN_ONE_MM = 639.4604;
 
 
 // TODO: 
+
+            // !!!
+     //1. ADD check for x length
+     //1. ADD check to run XY only if brush is up
+     //1. ADD check if X or Y is 0 for simontanious run
+     //1. Add case if  x distance / y is one
+
 
      // 1. Priority: Function that moves to any direction on board both axes at the same time
      // 1. Function that calculates parameters to run to a particular location from the current point
@@ -109,12 +124,20 @@ void setup() {
 void loop() {
 if(stop){return;}
 
+delayMicroseconds(5000);
 
 //runStepper(1,200000,"DOWN");
-
 //runStepper(2,200000,"DOWN");
 
-singleMethodTomoveBrushToXYLocation(200,100);
+
+singleMethodTomoveBrushToXYLocation(100,100);
+delayMicroseconds(40000);
+singleMethodTomoveBrushToXYLocation(150,150);
+delayMicroseconds(40000);
+singleMethodTomoveBrushToXYLocation(175,33);
+//singleMethodTomoveBrushToXYLocation(250,250);
+
+
 
 //runStepper(1,20000,"UP");
 
@@ -144,89 +167,73 @@ stop = true;
 //                
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void runStepper(int stepperNumber,long steps,String direction){
-
-  // to control direction
-  //First stepper
-  //digitalWrite(2,LOW);
-  //Second stepper
-  //digitalWrite(4,LOW);
-  int directionPin;
-
-  // To run stepper
-  int controlPin;
-  
- if (stepperNumber == 1) {
-    directionPin = 2;
-    controlPin = 3;
-  } else if (stepperNumber == 2) {
-    directionPin = 4;
-    controlPin = 5;
-  }
-
-  if(direction.equals("DOWN")){ digitalWrite(directionPin,LOW); }
-  else if (direction.equals("UP")){ digitalWrite(directionPin,HIGH); }
-
-  for (long i = 0; i < steps; i++) {
-    digitalWrite(controlPin,LOW);
-    digitalWrite(controlPin,HIGH);
-    delayMicroseconds(100);
-    }
-
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 void singleMethodTomoveBrushToXYLocation(long newXCoordinate,long newYCoordinate){
 
+  // Delay to prevent sudden move
+  delayMicroseconds(100);
+
+  long xDifference = newXCoordinate-currentX;
+  long yDifference = newYCoordinate-currentY;
+
+  // Check if there is no need for movement
+  if(xDifference == 0 && yDifference == 0){
+    return;
+  }
+
   // Set directions
-  if((newXCoordinate-currentX)>0){digitalWrite(2,HIGH);}
+  if(xDifference>0){digitalWrite(2,HIGH);}
   else{digitalWrite(2,LOW);}
-  if((newYCoordinate-currentY)>0){digitalWrite(4,HIGH);}
-  else{digitalWrite(2,LOW);}
+  if(yDifference>0){digitalWrite(4,HIGH);}
+  else{digitalWrite(4,LOW);}
 
-  // Get distance
-  float xSteps = 200*STEPS_IN_ONE_MM; //abs(currentX-newXCoordinate)*STEPS_IN_ONE_MM;
-  float ySteps = 100*STEPS_IN_ONE_MM; //abs(currentY-newYCoordinate)*STEPS_IN_ONE_MM;
 
-  long totalSteps = xSteps;//max(abs(xSteps), abs(ySteps));
 
-  float yIncrement = xSteps/ySteps;
+  // TODO : Add check if only one stepper needs to run
+  
 
-  float nextYIncrement = 0;
+
+
+  // Get number of steps
+  float xSteps = abs(xDifference)*STEPS_IN_ONE_MM;
+  float ySteps = abs(yDifference)*STEPS_IN_ONE_MM;
+
+  long totalSteps = max(xSteps,ySteps);
+
+  float incrementForShorterDistance;
+  int pinForLongerDistance;
+  int pinForShorterDistance;
+
+
+
+  
+      else if(xSteps>ySteps){
+         incrementForShorterDistance = xSteps/ySteps;
+         pinForLongerDistance = 3;
+         pinForShorterDistance = 5;
+      }else if(xSteps<ySteps){
+         incrementForShorterDistance = ySteps/xSteps;
+         pinForLongerDistance = 5;
+         pinForShorterDistance = 3;
+      }
+       
+  float nextIncrement = 0;
 
   for (long i = 0; i < totalSteps; i++) {
       
-    digitalWrite(3,LOW);
-    digitalWrite(3,HIGH);
+    digitalWrite(pinForLongerDistance,LOW);
+    digitalWrite(pinForLongerDistance,HIGH);
     
-    if(i>nextYIncrement){
-
-    digitalWrite(5,LOW);
-    digitalWrite(5,HIGH);
-    nextYIncrement+=yIncrement;
+    if(i>nextIncrement){
+    digitalWrite(pinForShorterDistance,LOW);
+    digitalWrite(pinForShorterDistance,HIGH);
+    nextIncrement+=incrementForShorterDistance;
     }
 
-    delayMicroseconds(100);
-   
-    }
+   delayMicroseconds(100);
+  }
 
-
-
-
-  
- // for (long i = 0; i < totalSteps; i++) {
-
-   // if (i < abs(xSteps)) {
-    //digitalWrite(3,LOW);
-    //digitalWrite(3,HIGH);
-   // }
-    //if (i < abs(ySteps)) {
-    //digitalWrite(5,LOW);
-    //digitalWrite(5,HIGH);
-   // }
-
-
+  currentX = newXCoordinate;
+  currentY = newYCoordinate;
 }
 
 
@@ -305,49 +312,7 @@ void moveBrushToXYLocation(long newXCoordinate,long newYCoordinate){
 }
 
 
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//void runTwoStepperssimultaneously(xDistance,yDistance,xDirection,yDirection){
-  
- // bool xLarger = x>y;
- // long largerValueDividedValue;
- // long smallerValue;
- // if(xLarger){
- //   largerValueDividedValue = x/y;
- //   smallerValue = y;
- // } else{
-  //  largerValue = y/x;
-  //  smallerValue = x;
- // }
-
-
-
-  // Special scenarion for x/y == 1 needs to be added 
-
-   // for (long i = 0; i < smallerValue; i++) {
-
-    //}
-
-
-
-
-
-
-   
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-//}
-
+//UNUSED
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 long getDistance(long num1, long num2) {
   int direction = 0;
@@ -360,6 +325,41 @@ long getDistance(long num1, long num2) {
 
   return abs(num1 - num2)*direction;
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void runStepper(int stepperNumber,long steps,String direction){
+
+  // to control direction
+  //First stepper
+  //digitalWrite(2,LOW);
+  //Second stepper
+  //digitalWrite(4,LOW);
+  int directionPin;
+
+  // To run stepper
+  int controlPin;
+  
+ if (stepperNumber == 1) {
+    directionPin = 2;
+    controlPin = 3;
+  } else if (stepperNumber == 2) {
+    directionPin = 4;
+    controlPin = 5;
+  }
+
+  if(direction.equals("DOWN")){ digitalWrite(directionPin,LOW); }
+  else if (direction.equals("UP")){ digitalWrite(directionPin,HIGH); }
+
+  for (long i = 0; i < steps; i++) {
+    digitalWrite(controlPin,LOW);
+    digitalWrite(controlPin,HIGH);
+    delayMicroseconds(100);
+    }
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //

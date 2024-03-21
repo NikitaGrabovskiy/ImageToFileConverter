@@ -5,6 +5,18 @@ import java.util.ArrayList;
 
 public class ImageDisplay extends JFrame {
 
+
+
+
+    //  For sure make a method that will show all painting process line by line - to be able to see all mistakes
+
+
+
+
+
+
+
+
     // TODO by priority :
 
     // Make it generate 50 different options for the same image with different tints and colors and choose the test
@@ -73,14 +85,13 @@ public class ImageDisplay extends JFrame {
 
             SplitImageIntoStrokes splitImageIntoStrokes = new SplitImageIntoStrokes();
 
-            int [][][] lines = splitImageIntoStrokes.splitImage(image,StaticValues.perfectColors,this);
+            String lines = splitImageIntoStrokes.splitImage(image,StaticValues.perfectColors,this);
 
-            //print3DArray(lines);
 
-            image = ImageDrawerFromArrayOfLines.drawImageFromArrays(lines,image.getWidth(),image.getHeight(),StaticValues.perfectColors);
+            // Change after refactoring
+          //  print3DArray(lines);
+         //   image = ImageDrawerFromArrayOfLines.drawImageFromArrays(lines,image.getWidth(),image.getHeight(),StaticValues.perfectColors);
 
-           // System.out.println(lines[0].length);
-            //System.out.println(lines[0][0].length);
 
            image = magnifyPixels(image,4);
 
