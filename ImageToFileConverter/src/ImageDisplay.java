@@ -78,7 +78,7 @@ public class ImageDisplay extends JFrame {
 
     private void displayImage(BufferedImage image) {
 
-            image = resizeImage(image, 100, 150);
+            image = resizeImage(image, 100, 133);
             //image = posterizeImage(image,3);
 
             image = convertToClosestColors(image,StaticValues.perfectColors);

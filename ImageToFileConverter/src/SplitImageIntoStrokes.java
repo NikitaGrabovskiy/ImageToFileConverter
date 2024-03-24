@@ -1,10 +1,8 @@
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
 
 
 public class SplitImageIntoStrokes {
@@ -13,12 +11,12 @@ public class SplitImageIntoStrokes {
     to be connected one after another - this way we need to put 2 time less numbers
 
     Format should be just
-    C1DL12-15,43-22L55-5100D,P20,P21,C2 12,13,22
+    C1DL12-15,43-22L55-5100D,P20,21,C2 12,13,22
 
     C1 - color number
     L - single line - paint without lifting brush
     D - new pait dip required
-    P - draw a single point
+    P - indicates that the rest of coordinates are single points
 
     No need to mention colors that are not precent
 
@@ -36,7 +34,7 @@ public class SplitImageIntoStrokes {
 
     public String splitImage(BufferedImage image, ArrayList<Color> colors, ImageDisplay jFrame) {
 
-        System.out.println("Number of colors " + colors.size());
+      //  System.out.println("Number of colors " + colors.size());
 
         StringBuffer result = new StringBuffer();
 
@@ -47,88 +45,116 @@ public class SplitImageIntoStrokes {
         return result.toString();
     }
 
-    private int[] splitSingleColor(BufferedImage image, Color color, int colorNumber, ImageDisplay jFrame) {
+    private String splitSingleColor(BufferedImage image, Color color, int colorNumber, ImageDisplay jFrame) {
+
+        int [] previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
+
+        if(previousCoordinates == null){
+            return "";
+        }
 
         int maxDipLength = 50;
         Graphics graphics = image.getGraphics();
 
-        StringBuffer linesAndDotsForASingleColor = new StringBuffer("C"+colorNumber+"D");
-        StringBuffer singleLine = new StringBuffer("L");
+        StringBuffer linesAndDotsForASingleColor = new StringBuffer("C"+colorNumber);
+
         int dipLength = 0;
-        int [] previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
 
-        //ArrayList<int []> allLines = new ArrayList<>();
+        StringBuffer singleLine = new StringBuffer("L");
 
-        while (true) {    ///  Change this condition
+        ArrayList<int[]> listOfDots = new ArrayList<>();
 
-            int[] line = drawRandomLine(new int[]{previousCoordinates[2],previousCoordinates[3]}, image, color.getRGB(),graphics);
+        boolean continueLine = false;
 
-            if(line == null){
+        while (true) {
+
+            int[] line = findLongestPossibleLine(new int[]{previousCoordinates[2],previousCoordinates[3]}, image, color.getRGB(),graphics);
+
+            if(line == null || calculateLengthOfLine(line) == 0){
+
                 linesAndDotsForASingleColor.append(singleLine);
+
+                if(line != null){
+                    if(line[0] != line[2] || line[1] != line[3]){
+                        throw new RuntimeException("It is not a dot");
+                    }
+                    listOfDots.add(line);
+                }
+
+
                 previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
                 if (previousCoordinates == null){
                     break;
                 }
+
                 singleLine = new StringBuffer("L"+previousCoordinates[2]+"-"+previousCoordinates[3]);
                 continue;
             }
 
+            //System.out.println(calculateLengthOfLine(line));
+
+            if(singleLine.toString().equals("L")){
+                //  only for beginning of color
+                singleLine.append(line[0]+"-"+line[1]+","+line[2]+"-"+line[3]);
+            }else {
+                singleLine.append(","+line[2]+"-"+line[3]);
+            }
+            previousCoordinates = line;
             dipLength+=calculateLengthOfLine(line);
 
             if(dipLength > maxDipLength){
-                linesAndDotsForASingleColor.append("D");
-                singleLine = null;
+               // linesAndDotsForASingleColor.append(singleLine);
+                singleLine.append("D");
+                dipLength = 0;
+
             }
-
-            //singleLine.append(line[0]+"-"+line[1]+","+line[2]+"-"+line[3]);
-
-            singleLine.append(","+line[2]+"-"+line[3]);
-            previousCoordinates = line;
-
-            //STORE SINGLE DOTS IN AN ARRAY AND DRAW THEM AT THE END (Or attach them in the beggining)
 
         }
 
-        System.out.println("all lines" + allLines.size());
+        if(!listOfDots.isEmpty()){
+            linesAndDotsForASingleColor.append("P");
 
-        Collections.sort(allLines, Comparator.comparingInt((int[] line) -> line[0]).thenComparingInt(line -> line[1]));
+            // Sort dots to be as close to each other as possible
+
+            listOfDots.stream().forEach(dot ->linesAndDotsForASingleColor.append(","+dot[0]+"-"+dot[1]));
+        }
 
 
-        return convertToFlatArray(allLines);
+        System.out.println(linesAndDotsForASingleColor);
+
+        return linesAndDotsForASingleColor.toString();
     }
 
 
-    public static int[] getRandomDotCoordinates(BufferedImage image, int targetColor) {
-        ArrayList<int[]> dots = new ArrayList<>();
-
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        // Collect all the coordinates of pixels with the specified color
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                int pixelColor = image.getRGB(x, y);
-
-                if (pixelColor == targetColor) {
-                    int[] coordinates = {x, y};
-                    dots.add(coordinates);
-                }
+    private int[] findLongestPossibleLine(int[] startPoint, BufferedImage image, int targetColor,Graphics graphics){
+        int count = 0;
+       // System.out.println("_____________________");
+        Map<Integer,int[]> map = new HashMap<>();
+        while(count < 8){
+            int [] line = getRandomLine(startPoint,image, targetColor, count);
+            if(line == null){
+                count++;
+                continue;
             }
+            map.put(calculateLengthOfLine(line),line);
+            count++;
+         //   System.out.println(calculateLengthOfLine(line));
         }
 
-        if (dots.isEmpty()) {
-            // No pixels with the specified color found
+        if(map.size() == 0){
             return null;
         }
 
-        // Randomly select a dot
-        Random random = new Random();
-        int[] randomDot = dots.get(random.nextInt(dots.size()));
+        int [] longestLine = map.get(Collections.max(map.keySet()));
 
-        return new int[]{0, 0, randomDot[0], randomDot[1]};
+       // System.out.println("Longest = "+ calculateLengthOfLine(longestLine));
+        graphics.setColor(StaticValues.defaultColor);
+        graphics.drawLine(longestLine[0], longestLine[1], longestLine[2], longestLine[3]);
+
+       return longestLine;
     }
 
-    public static int[] drawRandomLine(int[] startPoint, BufferedImage image, int targetColor,Graphics graphics) {
+    private int[] getRandomLine(int[] startPoint, BufferedImage image, int targetColor, int direction) {
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -144,24 +170,14 @@ public class SplitImageIntoStrokes {
         int endX = startX;
         int endY = startY;
 
-        // Check if the starting point is on the specified color
-        if ((image.getRGB(startX, startY)) != targetColor) {
-            // If not on the specified color, return null (failed to draw a line)
+        if(image.getRGB(startX,startY) != targetColor){
             return null;
         }
 
-        // Incorrect !!!
-
-        Random random = new Random();
-
-        // Randomly choose one of the adjacent pixels
-        int direction = random.nextInt(8);
-
         int oldEndX = endX;
         int oldEndY = endY;
-        // Continue extending the line until a point off the specified color is reached
-        while (image.getRGB(endX, endY) == targetColor) {
 
+        while (image.getRGB(endX, endY) == targetColor) {
             oldEndX = endX;
             oldEndY = endY;
 
@@ -197,25 +213,34 @@ public class SplitImageIntoStrokes {
             }
         }
 
-        graphics.setColor(StaticValues.defaultColor);
-        // Draw a dot at the current position
-        graphics.drawLine(startX, startY, endX, endY);
-
-        return new int[]{startX, startY, endX, endY};
+        return new int[]{oldEndX, oldEndY, endX, endY};
     }
 
-    private static int[] convertToFlatArray(ArrayList<int[]> lines) {
-        int totalLength = lines.size() * 4; // Each line has 4 values
-        int[] flatArray = new int[totalLength];
 
-        int index = 0;
-        for (int[] line : lines) {
-            for (int value : line) {
-                flatArray[index++] = value;
-            }
-        }
 
-        return flatArray;
+    public static int[] getNearPixelWithTheSameColor(int[] point,BufferedImage image,int targetColor) {
+        // List to store the surrounding points
+        List<int[]> surroundingPoints = new ArrayList<>();
+
+        // Extract the x and y coordinates from the input array
+        int x = point[0];
+        int y = point[1];
+
+        // Add all eight surrounding points to the list
+        surroundingPoints.add(new int[]{x - 1, y - 1}); // Top-left
+        surroundingPoints.add(new int[]{x, y - 1}); // Top-center
+        surroundingPoints.add(new int[]{x + 1, y - 1}); // Top-right
+        surroundingPoints.add(new int[]{x - 1, y}); // Middle-left
+        surroundingPoints.add(new int[]{x + 1, y}); // Middle-right
+        surroundingPoints.add(new int[]{x - 1, y + 1}); // Bottom-left
+        surroundingPoints.add(new int[]{x, y + 1}); // Bottom-center
+        surroundingPoints.add(new int[]{x + 1, y + 1}); // Bottom-right
+
+        Optional<int[]> any = surroundingPoints.stream()
+                .filter(coordinates -> image.getRGB(coordinates[0], coordinates[1]) == targetColor)
+                .findAny();
+
+        return any.orElse(null);
     }
 
     public int calculateLengthOfLine(int[] line) {
@@ -223,6 +248,37 @@ public class SplitImageIntoStrokes {
         double length = Math.sqrt(Math.pow(line [2] - line[0], 2) + Math.pow(line[3] - line[1], 2));
         // Return the length as an integer (rounded)
         return (int) Math.round(length);
+    }
+
+
+    public int[] getRandomDotCoordinates(BufferedImage image, int targetColor) {
+        ArrayList<int[]> dots = new ArrayList<>();
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        // Collect all the coordinates of pixels with the specified color
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int pixelColor = image.getRGB(x, y);
+
+                if (pixelColor == targetColor) {
+                    int[] coordinates = {x, y};
+                    dots.add(coordinates);
+                }
+            }
+        }
+
+        if (dots.isEmpty()) {
+            // No pixels with the specified color found
+            return null;
+        }
+
+        // Randomly select a dot
+        Random random = new Random();
+        int[] randomDot = dots.get(random.nextInt(dots.size()));
+
+        return new int[]{0, 0, randomDot[0], randomDot[1]};
     }
 
 }
