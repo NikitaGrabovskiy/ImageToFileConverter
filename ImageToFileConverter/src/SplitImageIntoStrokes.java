@@ -64,30 +64,40 @@ public class SplitImageIntoStrokes {
 
         ArrayList<int[]> listOfDots = new ArrayList<>();
 
-        boolean continueLine = false;
-
         while (true) {
 
-            int[] line = findLongestPossibleLine(new int[]{previousCoordinates[2],previousCoordinates[3]}, image, color.getRGB(),graphics);
+            int[] line = findLongestPossibleLine(new int[]{previousCoordinates[0],previousCoordinates[1]}, image, color.getRGB(),graphics);
 
-            if(line == null || calculateLengthOfLine(line) == 0){
+            if(line != null && calculateLengthOfLine(line) != 0){
+                dipLength+=calculateLengthOfLine(line);
 
-                linesAndDotsForASingleColor.append(singleLine);
+                if(dipLength > maxDipLength){
+                    // linesAndDotsForASingleColor.append(singleLine);
+                    singleLine.append("D");
+                    dipLength = 0;
+                }
+            }
 
-                if(line != null){
+            if(line!=null){
+                previousCoordinates = getNearPixelWithTheSameColor(new int[]{line[0],line[1]},image,color.getRGB());
+            }
+
+            if(line == null || calculateLengthOfLine(line) == 0 || previousCoordinates == null){
+
+                if(calculateLengthOfLine(line) == 0){
                     if(line[0] != line[2] || line[1] != line[3]){
                         throw new RuntimeException("It is not a dot");
                     }
                     listOfDots.add(line);
                 }
 
-
+                linesAndDotsForASingleColor.append(singleLine);
                 previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
                 if (previousCoordinates == null){
                     break;
                 }
 
-                singleLine = new StringBuffer("L"+previousCoordinates[2]+"-"+previousCoordinates[3]);
+                singleLine = new StringBuffer("L"+previousCoordinates[0]+"-"+previousCoordinates[1]);
                 continue;
             }
 
@@ -98,15 +108,6 @@ public class SplitImageIntoStrokes {
                 singleLine.append(line[0]+"-"+line[1]+","+line[2]+"-"+line[3]);
             }else {
                 singleLine.append(","+line[2]+"-"+line[3]);
-            }
-            previousCoordinates = line;
-            dipLength+=calculateLengthOfLine(line);
-
-            if(dipLength > maxDipLength){
-               // linesAndDotsForASingleColor.append(singleLine);
-                singleLine.append("D");
-                dipLength = 0;
-
             }
 
         }
@@ -236,11 +237,17 @@ public class SplitImageIntoStrokes {
         surroundingPoints.add(new int[]{x, y + 1}); // Bottom-center
         surroundingPoints.add(new int[]{x + 1, y + 1}); // Bottom-right
 
-        Optional<int[]> any = surroundingPoints.stream()
-                .filter(coordinates -> image.getRGB(coordinates[0], coordinates[1]) == targetColor)
-                .findAny();
+        try {
+            Optional<int[]> any = surroundingPoints.stream()
+                    .filter(coordinates -> coordinates[0] >= 0 && coordinates[0] < image.getWidth() && coordinates[1] >= 0 && coordinates[1] < image.getHeight())
+                    .filter(coordinates -> image.getRGB(coordinates[0], coordinates[1]) == targetColor)
+                    .findAny();
 
-        return any.orElse(null);
+            return any.orElse(null);
+        }catch (Exception e){
+            System.out.println("EXCEPTION");
+        }
+        return null;
     }
 
     public int calculateLengthOfLine(int[] line) {
@@ -278,7 +285,7 @@ public class SplitImageIntoStrokes {
         Random random = new Random();
         int[] randomDot = dots.get(random.nextInt(dots.size()));
 
-        return new int[]{0, 0, randomDot[0], randomDot[1]};
+        return new int[]{randomDot[0], randomDot[1]};
     }
 
 }
