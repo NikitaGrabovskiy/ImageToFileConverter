@@ -87,11 +87,7 @@ public class ImageDisplay extends JFrame {
 
             String lines = splitImageIntoStrokes.splitImage(image,StaticValues.perfectColors,this);
 
-
-            // Change after refactoring
-          //  print3DArray(lines);
-         //   image = ImageDrawerFromArrayOfLines.drawImageFromArrays(lines,image.getWidth(),image.getHeight(),StaticValues.perfectColors);
-
+           image = ImageDrawerFromString.drawImageFromString(lines,image.getWidth(),image.getHeight(),StaticValues.perfectColors);
 
            image = magnifyPixels(image,4);
 
