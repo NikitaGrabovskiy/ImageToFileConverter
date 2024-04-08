@@ -53,30 +53,34 @@ public class StaticValues {
     public static void addPerfectColors(){
 
         // Not painted
-        perfectColors.add(new Color(255, 255, 255));  // White
+        perfectColors.add(new Color(255, 255, 255));  // 0 White
         
+        // TOTAL should be 32
 
         // First set - regular not bright
-        perfectColors.add(new Color(0, 0, 0));        // Black
-        perfectColors.add(new Color(176, 26, 26));      // Red
-        perfectColors.add(new Color(0, 161, 0));        // Green
-        perfectColors.add(new Color(34, 102, 250));      // Blue
-        perfectColors.add(new Color(255, 255, 0));       // Yellow
-        perfectColors.add(new Color(255, 165, 0));      // Orange
-        perfectColors.add(new Color(141, 43, 141));     // Purple
-        perfectColors.add(new Color(128, 128, 128));    // Gray
-        perfectColors.add(new Color(0, 168, 168));      // Teal
-        perfectColors.add(new Color(166, 166, 0));      // Olive
-        perfectColors.add(new Color(139, 68, 19));      // Brown
-        perfectColors.add(new Color(252, 122, 240));    // pink
+        perfectColors.add(new Color(0, 0, 0));          // 1 Black
+        perfectColors.add(new Color(176, 26, 26));      // 2 Red
+        perfectColors.add(new Color(0, 161, 0));        // 3 Green
+        perfectColors.add(new Color(34, 102, 250));     // 4 Blue
+        perfectColors.add(new Color(255, 165, 0));      // 5 Orange
+        perfectColors.add(new Color(141, 43, 141));     // 6 Purple
+        perfectColors.add(new Color(128, 128, 128));    // 7 Gray
+        perfectColors.add(new Color(139, 68, 19));      // 8 Brown
+        perfectColors.add(new Color(255, 255, 0));      // 9 Yellow
+        perfectColors.add(new Color(0, 168, 168));      // 10 Teal
+        perfectColors.add(new Color(166, 166, 0));      // 11 Olive
+        perfectColors.add(new Color(252, 122, 240));    // 12 pink
 
         // Second set - dark (No need for dark yellow, orange, pink)
 
-        perfectColors.add(new Color(91, 1, 1));      // Dark Red
-        perfectColors.add(new Color(1, 93, 45));     // Dark Green
-        perfectColors.add(new Color(5, 5, 93));      // Navy
+        perfectColors.add(new Color(91, 1, 1));         // 13 Dark Red
+        perfectColors.add(new Color(1, 93, 45));        // 14 Dark Green
+        perfectColors.add(new Color(5, 5, 93));         // 15 Navy
+        perfectColors.add(new Color(50, 50, 50));       // 16 Dark grey
+
+
+
         perfectColors.add(new Color(86, 1, 86));      // Dark purple
-        perfectColors.add(new Color(50, 50, 50));      // Dark grey
         perfectColors.add(new Color(2, 84, 84));    // Dark Teal
         perfectColors.add(new Color(89, 89, 1));    // Dark Olive
         perfectColors.add(new Color(68, 35, 19));    // Dark Brown
@@ -86,14 +90,15 @@ public class StaticValues {
         perfectColors.add(new Color(253, 112, 112));      //Light Red
         perfectColors.add(new Color(201, 248, 201));      // Green
         perfectColors.add(new Color(134, 200, 248));    // Medium Blue
-        perfectColors.add(new Color(253, 253, 196));    // Yellow
-        perfectColors.add(new Color(252, 194, 156));    // Orange
+       // perfectColors.add(new Color(253, 253, 196));    // Yellow
+       // perfectColors.add(new Color(252, 194, 156));    // Orange
         perfectColors.add(new Color(222, 112, 29));      // Brown
-        perfectColors.add(new Color(213, 213, 213));  // Gray
+       // perfectColors.add(new Color(213, 213, 213));  // Gray
         perfectColors.add(new Color(243, 184, 232));  // pink
 
         // Forth set - bright acid colors
         perfectColors.add(new Color(0, 255, 0));      // Acid Green
+
         perfectColors.add(new Color(255, 0, 0));      // Acid Red
         perfectColors.add(new Color(232, 0, 232));    // Acid Purple
         perfectColors.add(new Color(0, 0, 255));      // Acid Blue
@@ -102,6 +107,8 @@ public class StaticValues {
         // 2 extra gray colors (Use sometimes)
         perfectColors.add(new Color(169, 169, 169));  // Gray between light and regular
         perfectColors.add(new Color(77, 77, 77));    // Grey between regular and dark
+
+
 
     }
 

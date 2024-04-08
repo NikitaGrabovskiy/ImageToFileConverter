@@ -5,17 +5,7 @@ import java.util.ArrayList;
 
 public class ImageDisplay extends JFrame {
 
-
-
-
     //  For sure make a method that will show all painting process line by line - to be able to see all mistakes
-
-
-
-
-
-
-
 
     // TODO by priority :
 
@@ -65,7 +55,7 @@ public class ImageDisplay extends JFrame {
         label = new JLabel();
         add(label);
 
-        int imageNumber = 30;
+        int imageNumber = 3;
 
         // Choose the image file path
         String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/";
@@ -78,10 +68,15 @@ public class ImageDisplay extends JFrame {
 
     private void displayImage(BufferedImage image) {
 
-            image = resizeImage(image, 100, 133);
-            //image = posterizeImage(image,3);
+            image = resizeImage(image, 80, 106);
+            //image = resizeImage(image, 106, 80);
 
-            image = convertToClosestColors(image,StaticValues.perfectColors);
+           // image = posterizeImage(image,16);
+
+            //image = invertColors(image);
+           // image = adjustRGBColors(image,0,30,0);
+
+             image = convertToClosestColors(image,StaticValues.perfectColors);
 
             SplitImageIntoStrokes splitImageIntoStrokes = new SplitImageIntoStrokes();
 
@@ -89,9 +84,13 @@ public class ImageDisplay extends JFrame {
 
            image = ImageDrawerFromString.drawImageFromString(lines,image.getWidth(),image.getHeight(),StaticValues.perfectColors);
 
-           image = magnifyPixels(image,4);
+           image = magnifyPixels(image,6);
 
-            // Set the image on the label
+        String readyCode = lines.replace("L", "");
+
+        System.out.println(readyCode);
+
+        // Set the image on the label
             label.setIcon(new ImageIcon(image));
 
     }
@@ -205,4 +204,87 @@ public class ImageDisplay extends JFrame {
     }
 
 
+    public BufferedImage posterizeImage(BufferedImage originalImage, int layers) {
+        // Ensure layers are within a valid range
+        layers = Math.max(layers, 1); // At least 1 layer
+        int width = originalImage.getWidth();
+        int height = originalImage.getHeight();
+
+        // Create a new BufferedImage to hold the posterized image
+        BufferedImage posterizedImage = new BufferedImage(width, height, originalImage.getType());
+
+        // Calculate the adjustment factor based on the number of layers
+        int adjustmentFactor = 256 / layers;
+
+        // Process each pixel of the original image
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Color originalColor = new Color(originalImage.getRGB(x, y));
+
+                // Calculate the new color levels for each channel based on the number of layers
+                int red = (originalColor.getRed() / adjustmentFactor) * adjustmentFactor;
+                int green = (originalColor.getGreen() / adjustmentFactor) * adjustmentFactor;
+                int blue = (originalColor.getBlue() / adjustmentFactor) * adjustmentFactor;
+
+                // Apply the new color to the posterized image
+                Color posterizedColor = new Color(red, green, blue);
+                posterizedImage.setRGB(x, y, posterizedColor.getRGB());
+            }
+        }
+
+        return posterizedImage;
+    }
+
+    public static BufferedImage invertColors(BufferedImage originalImage) {
+        int width = originalImage.getWidth();
+        int height = originalImage.getHeight();
+
+        // Create a new BufferedImage to hold the inverted colors
+        BufferedImage invertedImage = new BufferedImage(width, height, originalImage.getType());
+
+        // Iterate over each pixel to invert the colors
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int originalPixel = originalImage.getRGB(x, y);
+                Color originalColor = new Color(originalPixel, true);
+
+                // Invert the RGB values
+                int red = 255 - originalColor.getRed();
+                int green = 255 - originalColor.getGreen();
+                int blue = 255 - originalColor.getBlue();
+                int alpha = originalColor.getAlpha(); // Preserve the original alpha value
+
+                Color invertedColor = new Color(red, green, blue, alpha);
+                invertedImage.setRGB(x, y, invertedColor.getRGB());
+            }
+        }
+
+        return invertedImage;
+    }
+
+    public static BufferedImage adjustRGBColors(BufferedImage originalImage, int redAdjust, int greenAdjust, int blueAdjust) {
+        int width = originalImage.getWidth();
+        int height = originalImage.getHeight();
+
+        // Create a new BufferedImage to hold the adjusted colors
+        BufferedImage adjustedImage = new BufferedImage(width, height, originalImage.getType());
+
+        // Iterate over each pixel to adjust the RGB values separately
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Color originalColor = new Color(originalImage.getRGB(x, y), true);
+
+                // Adjust each RGB value, ensuring they remain within [0, 255]
+                int red = Math.min(Math.max(originalColor.getRed() + redAdjust, 0), 255);
+                int green = Math.min(Math.max(originalColor.getGreen() + greenAdjust, 0), 255);
+                int blue = Math.min(Math.max(originalColor.getBlue() + blueAdjust, 0), 255);
+
+                // Create the new color with adjusted RGB and original alpha, then set it
+                Color adjustedColor = new Color(red, green, blue, originalColor.getAlpha());
+                adjustedImage.setRGB(x, y, adjustedColor.getRGB());
+            }
+        }
+
+        return adjustedImage;
+    }
 }

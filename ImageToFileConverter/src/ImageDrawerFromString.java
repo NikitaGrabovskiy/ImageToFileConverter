@@ -9,28 +9,26 @@ public class ImageDrawerFromString {
         BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
 
-        imageCode = imageCode.replace("D", "");
+        imageCode = imageCode.replace("\nD", "");
         String[] colorLines = imageCode.split("C");
 
         for (String color : colorLines) {
 
             int colorNumber = 0;
             try {
-                colorNumber = Integer.valueOf(color.substring(0, color.indexOf("L")));
+                colorNumber = Integer.valueOf(color.substring(0, color.indexOf("\nL")));
             } catch (Exception e) {
                 System.out.println("COLOR Line" + color);
             }
             //System.out.println("Color number = " + colorNumber);
 
-
             g2d.setColor(colors.get(colorNumber));
-
 
             color = color.replace("C", "");
 
             System.out.println();
 
-            String[] allLines = color.split("L");
+            String[] allLines = color.split("\nL");
             for (String line : allLines) {
                 //System.out.println("********************LINE ="+ line);
 
@@ -59,7 +57,7 @@ public class ImageDrawerFromString {
         return image;
     }
 
-    public static BufferedImage drawImageFromStringOLD(String imageCode, int imageWidth, int imageHeight, ArrayList<Color> colors) {
+  /*  public static BufferedImage drawImageFromStringOLD(String imageCode, int imageWidth, int imageHeight, ArrayList<Color> colors) {
         BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
 
@@ -76,10 +74,7 @@ public class ImageDrawerFromString {
             }
             //System.out.println("Color number = " + colorNumber);
 
-
             g2d.setColor(colors.get(colorNumber));
-
-
 
             color = color.replace("C","");
 
@@ -122,5 +117,5 @@ public class ImageDrawerFromString {
 
         g2d.dispose();
         return image;
-    }
+    }*/
 }

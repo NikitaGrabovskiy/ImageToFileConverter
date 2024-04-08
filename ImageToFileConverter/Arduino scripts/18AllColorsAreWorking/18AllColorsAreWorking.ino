@@ -48,7 +48,7 @@ void setup() {
   pinMode(5, OUTPUT);
 
      // initialize actuator
-  pinMode(11, OUTPUT);
+  pinMode(6, OUTPUT);
   pinMode(10, OUTPUT);
   pinMode(9, OUTPUT);
 }
@@ -76,7 +76,7 @@ void cleanUp(){
   pinMode(3, INPUT);
   pinMode(4, INPUT);
   pinMode(5, INPUT);
-  pinMode(11, INPUT);
+  pinMode(6, INPUT);
   pinMode(10, INPUT);
   pinMode(9, INPUT);
 }
@@ -242,12 +242,12 @@ moveBrush(paintDip,"UP");
 
 void moveBrush(int time,String direction){
   if (direction.equals("UP")){
-      digitalWrite(11, LOW);
+      digitalWrite(6, LOW);
         // extend the actuator
       digitalWrite(10, HIGH);
       digitalWrite(9, LOW);
   } else if (direction.equals("DOWN")){
-       digitalWrite(11, HIGH);
+       digitalWrite(6, HIGH);
         // retract the actuator
        digitalWrite(10, LOW);
        digitalWrite(9, HIGH);
@@ -260,7 +260,7 @@ void moveBrush(int time,String direction){
     digitalWrite(10, LOW);
     digitalWrite(9, LOW);
         // needed for DOWN only
-    digitalWrite(11, LOW);
+    digitalWrite(6, LOW);
 }
 
 

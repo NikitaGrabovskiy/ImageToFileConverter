@@ -52,7 +52,6 @@ public class SplitImageIntoStrokes {
             }*/
         }
 
-        System.out.println(result);
         return result.toString();
     }
 
@@ -324,11 +323,16 @@ public class SplitImageIntoStrokes {
             return "";
         }
         Graphics graphics = image.getGraphics();
-        StringBuffer linesAndDotsForASingleColor = new StringBuffer("C" + colorNumber);
+        StringBuffer linesAndDotsForASingleColor = new StringBuffer("\nC" + colorNumber);
         StringBuffer singleLine = new StringBuffer();
+        int dipLength = 0;
         while (true) {
 
             int[] line = findLongestPossibleLine(new int[]{previousCoordinates[0], previousCoordinates[1]}, image, color.getRGB(), graphics);
+
+            if (line != null) {
+                dipLength += calculateLengthOfLine(line);
+            }
 
           //  System.out.println("Line =" + line ==null?null:line[0] + "-" + line[1] + "," + line[2] + "-" + line[3] + " Single Line "+ singleLine);
             //System.out.println("LINE LINE"+ line[0] + "-" + line[1] + "," + line[2] + "-" + line[3]);
@@ -338,8 +342,13 @@ public class SplitImageIntoStrokes {
                 //System.out.println("Line");
                 //linesAndDotsForASingleColor.append("L" + singleLine);
                 int [] nearPoint = getNearPixelWithTheSameColor(new int[]{line[2], line[3]}, image, color.getRGB());
+
                 if(nearPoint == null){
-                    linesAndDotsForASingleColor.append("L" + singleLine.substring(1));
+                    if (dipLength > 75) {
+                        singleLine.append("\nD");
+                        dipLength = 0;
+                    }
+                    linesAndDotsForASingleColor.append("\nL" + singleLine.substring(1));
                     //System.out.println("linesAndDotsForASingleColor "+linesAndDotsForASingleColor);
                     singleLine = new StringBuffer();
                     previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
@@ -353,6 +362,10 @@ public class SplitImageIntoStrokes {
                 throw new RuntimeException("LINE IS NULL");
             }
         }
+
+
+        // TODO : REMOVE LAST "D"
+
         return linesAndDotsForASingleColor.toString();
     }
 }
