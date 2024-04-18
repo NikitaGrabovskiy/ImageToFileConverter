@@ -30,6 +30,7 @@ public class SplitImageIntoStrokes {
     Amount of points that can be painted at one time will be controlled on arduino
     */
 
+    private int dipCount;
 
     public String splitImage(BufferedImage image, ArrayList<Color> colors, ImageDisplay jFrame) {
 
@@ -326,6 +327,13 @@ public class SplitImageIntoStrokes {
         StringBuffer linesAndDotsForASingleColor = new StringBuffer("\nC" + colorNumber);
         StringBuffer singleLine = new StringBuffer();
         int dipLength = 0;
+
+        ArrayList<String> listOfStrings = new ArrayList<>();
+
+        int numberOfDotsInALine = 0;
+
+        int countForDip = 0;
+
         while (true) {
 
             int[] line = findLongestPossibleLine(new int[]{previousCoordinates[0], previousCoordinates[1]}, image, color.getRGB(), graphics);
@@ -338,17 +346,16 @@ public class SplitImageIntoStrokes {
             //System.out.println("LINE LINE"+ line[0] + "-" + line[1] + "," + line[2] + "-" + line[3]);
             if (line != null) {
                 singleLine.append(","+line[0] + "-" + line[1] + "," + line[2] + "-" + line[3]);
+                numberOfDotsInALine++;
                 //System.out.println("Appended New Line = " + singleLine );
                 //System.out.println("Line");
                 //linesAndDotsForASingleColor.append("L" + singleLine);
                 int [] nearPoint = getNearPixelWithTheSameColor(new int[]{line[2], line[3]}, image, color.getRGB());
 
-                if(nearPoint == null){
-                    if (dipLength > 75) {
-                        singleLine.append("\nD");
-                        dipLength = 0;
-                    }
-                    linesAndDotsForASingleColor.append("\nL" + singleLine.substring(1));
+                if(nearPoint == null || numberOfDotsInALine>12){
+                    numberOfDotsInALine = 0;
+                    //linesAndDotsForASingleColor.append("\nL" + singleLine.substring(1));
+                    listOfStrings.add("\nL" + singleLine.substring(1));
                     //System.out.println("linesAndDotsForASingleColor "+linesAndDotsForASingleColor);
                     singleLine = new StringBuffer();
                     previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
@@ -366,6 +373,46 @@ public class SplitImageIntoStrokes {
 
         // TODO : REMOVE LAST "D"
 
+        listOfStrings=LineSorter.sortLines(listOfStrings);
+        addDipIndicator(listOfStrings);
+
+        listOfStrings.stream().forEach(a -> linesAndDotsForASingleColor.append(a));
+
         return linesAndDotsForASingleColor.toString();
+    }
+
+    public void addDipIndicator(ArrayList<String> lines) {
+        for (String line : lines) {
+            int[] segmentNumbers = calculateDipCount(line);
+            System.out.println("LINE "+line);
+            System.out.println(Arrays.toString(segmentNumbers));
+            for (int a = 0; a<segmentNumbers.length;){
+                dipCount+=calculateLengthOfLine(new int[]{segmentNumbers[0],segmentNumbers[1],segmentNumbers[2],segmentNumbers[3]});
+                a+=4;
+            }
+
+            if(dipCount>65){
+                int i = lines.indexOf(line);
+                lines.set(i,line+"\nD");
+                dipCount = 0;
+            }
+
+            System.out.println(dipCount);
+        }
+    }
+
+    public int[] calculateDipCount(String input) {
+        input = input.replace("\nL","");
+        String[] pairs = input.split(",");
+        int[] numbers = new int[pairs.length * 2];
+
+        for (int i = 0; i < pairs.length; i++) {
+            String[] parts = pairs[i].split("-");
+            numbers[2 * i] = Integer.parseInt(parts[0].trim());
+            numbers[2 * i + 1] = Integer.parseInt(parts[1].trim());
+
+        }
+
+        return numbers;
     }
 }

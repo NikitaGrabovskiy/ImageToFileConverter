@@ -55,7 +55,7 @@ public class ImageDisplay extends JFrame {
         label = new JLabel();
         add(label);
 
-        int imageNumber = 3;
+        int imageNumber = 1;
 
         // Choose the image file path
         String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/";
@@ -82,13 +82,14 @@ public class ImageDisplay extends JFrame {
 
             String lines = splitImageIntoStrokes.splitImage(image,StaticValues.perfectColors,this);
 
-           image = ImageDrawerFromString.drawImageFromString(lines,image.getWidth(),image.getHeight(),StaticValues.perfectColors);
+          image = ImageDrawerFromString.drawImageFromString(lines,image.getWidth(),image.getHeight(),StaticValues.perfectColors);
 
            image = magnifyPixels(image,6);
 
         String readyCode = lines.replace("L", "");
+         System.out.println(readyCode);
 
-        System.out.println(readyCode);
+        //System.out.println(lines);
 
         // Set the image on the label
             label.setIcon(new ImageIcon(image));
@@ -100,8 +101,6 @@ public class ImageDisplay extends JFrame {
             new ImageDisplay().setVisible(true);
         });
     }
-
-
 
     public BufferedImage resizeImage(BufferedImage originalImage, int newWidth, int newHeight) {
         Image resultingImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);

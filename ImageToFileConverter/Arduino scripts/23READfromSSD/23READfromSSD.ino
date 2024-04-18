@@ -1,3 +1,6 @@
+#include <SPI.h>
+#include <SD.h>
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           GLOBAL CONSTANTS
@@ -34,10 +37,10 @@ const float STEPS_IN_ONE_MM = 639.4604;
 bool stop = false;
 int currentX = 0;
 int currentY = 0;
-//long currentX = 360;
-//long currentY = 100;
-
+int currentColor = -1;
 void setup() {
+
+  Serial.begin(9600);
 
   // first stepper
   pinMode(2, OUTPUT);
@@ -47,40 +50,32 @@ void setup() {
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
 
-     // initialize actuator
+  // initialize actuator
   pinMode(6, OUTPUT);
   pinMode(10, OUTPUT);
   pinMode(9, OUTPUT);
+
+  SD.begin(8);
 }
 
 void loop() {
 if(stop){return;}
 
- //runStepper(1,400000,"DOWN");
+//delay(7000);
 
-delay(7000);
+processFile();
 
-dipToColor(8);
+
+
+//dipToColor(8);
 //dipToColor(13);
 //dipToColor(20);
 //dipToColor(29);
 
-singleMethodTomoveBrushToXYLocation(1,1);
+//singleMethodTomoveBrushToXYLocation(1,1);
 
 stop = true;
-cleanUp();
 }
-
-void cleanUp(){
-  pinMode(2, INPUT);
-  pinMode(3, INPUT);
-  pinMode(4, INPUT);
-  pinMode(5, INPUT);
-  pinMode(6, INPUT);
-  pinMode(10, INPUT);
-  pinMode(9, INPUT);
-}
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +85,28 @@ void cleanUp(){
 //
 //                
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void processFile(){
+
+ String fileName = "image.txt";
+ File myFile = SD.open(fileName);
+  if (myFile) {
+    Serial.println("open : "+fileName);
+    // read from the file until there's nothing else in it:
+    while (myFile.available()) {
+      String line = readLine(myFile);
+      Serial.println(line);
+      processAndDraw(line);
+    }
+    // close the file:
+    myFile.close();
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening :"+fileName);
+  }
+  
+}
 
 void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
 
@@ -143,7 +160,7 @@ void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
          incrementForShorterDistance = xSteps/ySteps;
          pinForLongerDistance = 3;
          pinForShorterDistance = 5;
-      }else{
+  }else{
          incrementForShorterDistance = ySteps/xSteps;
          pinForLongerDistance = 5;
          pinForShorterDistance = 3;
@@ -264,6 +281,118 @@ void moveBrush(int time,String direction){
 }
 
 
+String* split(const String &s, char delimiter, int &count) {
+    count = 0; // Reset count
+    int length = s.length();
+    for (int i = 0; i < length; i++) {
+        if (s.charAt(i) == delimiter) {
+            count++;
+        }
+    }
+    // There will be count+1 tokens
+    String *tokens = new String[count + 1];
+    int tokenIndex = 0;
+    int startIndex = 0;
+
+    for (int i = 0; i <= length; i++) {
+        if (i == length || s.charAt(i) == delimiter) {
+            tokens[tokenIndex++] = s.substring(startIndex, i);
+            startIndex = i + 1;
+        }
+    }
+    count = tokenIndex; // Update count to actual number of tokens
+    return tokens;
+}
+
+void processAndDraw(const String &input) {
+
+    if (input.startsWith("C")) {
+      String numberPart = input.substring(1); // Get the part of the string after "C"
+      int extractedNumber = numberPart.toInt(); // Convert that part to an integer
+
+      // Use the extracted number as needed
+       Serial.println("");
+       Serial.println("Setting color to :");
+       Serial.print(extractedNumber);
+       Serial.print(" and dipping");
+       currentColor = extractedNumber;
+      
+        dipToColor(extractedNumber);
+
+       return;
+       } else if (input.startsWith("D")){
+       Serial.println("");
+       Serial.println("Diping color");
+       Serial.print(currentColor);
+
+        dipToColor(currentColor);
+       return;
+       }
+
+       
+
+    int drawImageDip = 2000;
+    int pairCount = 0;
+    String* pairs = split(input, ',', pairCount);
+    bool firstDot = true;
+    
+    for (int j = 0; j < pairCount; j++) {
+        
+        int pointCount = 0;
+        String* points = split(pairs[j], '-', pointCount);
+        
+        if (pointCount != 2) continue; // Ensure we have a complete pair
+
+        // Convert string coordinates to integers and call drawLine
+        int x = points[0].toInt();
+        int y = points[1].toInt();
+
+        int xForImage = (x*2.88) + 46;
+        int yForImage = (y*2.88) + 41;
+
+        singleMethodTomoveBrushToXYLocation(xForImage,yForImage);
+
+        Serial.print("X =");
+        Serial.print(x);
+        Serial.print(" Y =");
+        Serial.print(y);
+        Serial.print(" (");
+
+        Serial.print(" XForImage =");
+        Serial.print(xForImage);
+        Serial.print(" YForImage =");
+        Serial.print(yForImage);
+        Serial.print(" ),");
+        
+        if(firstDot){
+          Serial.println("");
+          Serial.println("Brash down for the first dot ");
+          moveBrush(drawImageDip,"DOWN");
+          firstDot=false;
+          }
+
+        delete[] points; // Clean up dynamically allocated memory
+    }
+
+    delete[] pairs; // Clean up dynamically allocated memory
+    Serial.println("");
+    Serial.println("MOVE BRASH UP");
+  //  moveBrush(drawImageDip,"UP");
+}
+
+String readLine(File &file) {
+    String line = "";
+    while (file.available()) {
+        char c = file.read(); // Read a byte from the file
+        if (c == '\n') {
+            break; // Stop at the end of the line
+        }
+        line += c; // Append the byte to the line
+    }
+    return line;
+}
+
+
                    // METHODS FOR DEBUGGIN
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void runStepper(int stepperNumber,long steps,String direction){
@@ -293,8 +422,7 @@ void runStepper(int stepperNumber,long steps,String direction){
     digitalWrite(controlPin,LOW);
     digitalWrite(controlPin,HIGH);
     delayMicroseconds(85);
-    }
-
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -316,9 +444,9 @@ void runStepper(int stepperNumber,long steps,String direction){
 //                      Picture 12 inch size (Slighly more than actual size)
 //  30.6 sm 
 
-//                      Image proportions : 23 X 30.6 are the same as  100 px X 133 px (1 X 1,33)
+//                      Image proportions : 23 X 30.6 are the same as  80 px X 106 px (1 X 1,33)
 
-// paint brush size = 23/100 = 0,23 (same as 30.6/133)
+// paint brush size = 230 / 80 = 2.88
 
 // Steps for 1 brush stroke size is 0.23/0.00015635 = 1471 steps (for 100 px X 133 px image)
 

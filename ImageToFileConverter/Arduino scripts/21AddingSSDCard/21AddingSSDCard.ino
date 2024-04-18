@@ -1,3 +1,6 @@
+#include <SPI.h>
+#include <SD.h>
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           GLOBAL CONSTANTS
@@ -6,6 +9,7 @@
 
 // Put them in functions 
 const float STEPS_IN_ONE_MM = 639.4604;
+const String fileName = "image.txt";
 
 // TODO: 
 
@@ -34,10 +38,13 @@ const float STEPS_IN_ONE_MM = 639.4604;
 bool stop = false;
 int currentX = 0;
 int currentY = 0;
+File myFile;
 //long currentX = 360;
 //long currentY = 100;
 
 void setup() {
+
+  Serial.begin(9600);
 
   // first stepper
   pinMode(2, OUTPUT);
@@ -51,21 +58,52 @@ void setup() {
   pinMode(6, OUTPUT);
   pinMode(10, OUTPUT);
   pinMode(9, OUTPUT);
+
+  SD.begin(8);
 }
 
 void loop() {
 if(stop){return;}
 
- //runStepper(1,400000,"DOWN");
 
-delay(7000);
+//runStepper(1,400000,"DOWN");
+//delay(7000);
 
-dipToColor(8);
+
+
+  myFile = SD.open(fileName);
+  if (myFile) {
+    Serial.println("open :"+fileName);
+
+    // read from the file until there's nothing else in it:
+    while (myFile.available()) {
+       Serial.println("TEST :");
+      String line = readLine(myFile);
+      Serial.println(line);
+      processAndDraw(line);
+
+    }
+    // close the file:
+    myFile.close();
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening :"+fileName);
+  }
+
+
+
+
+
+
+
+
+
+//dipToColor(8);
 //dipToColor(13);
 //dipToColor(20);
 //dipToColor(29);
 
-singleMethodTomoveBrushToXYLocation(1,1);
+//singleMethodTomoveBrushToXYLocation(1,1);
 
 stop = true;
 cleanUp();
@@ -296,6 +334,79 @@ void runStepper(int stepperNumber,long steps,String direction){
     }
 
 }
+
+
+void drawLine(int x1, int y1) {
+    Serial.println(x1);
+    Serial.println(", ");
+    Serial.println(y1);
+}
+
+String* split(const String &s, char delimiter, int &count) {
+    count = 0; // Reset count
+    int length = s.length();
+    for (int i = 0; i < length; i++) {
+        if (s.charAt(i) == delimiter) {
+            count++;
+        }
+    }
+    // There will be count+1 tokens
+    String *tokens = new String[count + 1];
+    int tokenIndex = 0;
+    int startIndex = 0;
+
+    for (int i = 0; i <= length; i++) {
+        if (i == length || s.charAt(i) == delimiter) {
+            tokens[tokenIndex++] = s.substring(startIndex, i);
+            startIndex = i + 1;
+        }
+    }
+    count = tokenIndex; // Update count to actual number of tokens
+    return tokens;
+}
+
+void processAndDraw(const String &input) {
+    int pairCount = 0;
+    String* pairs = split(input, ',', pairCount);
+    Serial.println(pairCount);
+    Serial.println("Before iterator pairCount"+pairCount);
+    for (int j = 0; j < pairCount; j++) {
+        Serial.println("inside loop j = ");
+        
+        int pointCount = 0;
+        String* points = split(pairs[j], '-', pointCount);
+
+        Serial.println("pointCount = ");
+        Serial.print(pointCount);
+        if (pointCount != 2) continue; // Ensure we have a complete pair
+
+        // Convert string coordinates to integers and call drawLine
+        int x1 = points[0].toInt();
+        int y1 = points[1].toInt();
+        Serial.print("Drawing line method");
+        drawLine(x1, y1);
+
+        delete[] points; // Clean up dynamically allocated memory
+    }
+
+    delete[] pairs; // Clean up dynamically allocated memory
+}
+
+
+
+
+String readLine(File &file) {
+    String line = "";
+    while (file.available()) {
+        char c = file.read(); // Read a byte from the file
+        if (c == '\n') {
+            break; // Stop at the end of the line
+        }
+        line += c; // Append the byte to the line
+    }
+    return line;
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

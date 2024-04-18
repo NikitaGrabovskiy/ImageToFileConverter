@@ -60,10 +60,14 @@ if(stop){return;}
 
 delay(7000);
 
+//moveBrush(1000,"DOWN");
+///moveBrush(1000,"UP");
+
+
 dipToColor(8);
-//dipToColor(13);
-//dipToColor(20);
-//dipToColor(29);
+dipToColor(13);
+dipToColor(20);
+dipToColor(29);
 
 singleMethodTomoveBrushToXYLocation(1,1);
 

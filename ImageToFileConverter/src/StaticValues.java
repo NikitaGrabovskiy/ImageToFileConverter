@@ -57,58 +57,52 @@ public class StaticValues {
         
         // TOTAL should be 32
 
-        // First set - regular not bright
-        perfectColors.add(new Color(0, 0, 0));          // 1 Black
-        perfectColors.add(new Color(176, 26, 26));      // 2 Red
-        perfectColors.add(new Color(0, 161, 0));        // 3 Green
-        perfectColors.add(new Color(34, 102, 250));     // 4 Blue
-        perfectColors.add(new Color(255, 165, 0));      // 5 Orange
-        perfectColors.add(new Color(141, 43, 141));     // 6 Purple
-        perfectColors.add(new Color(128, 128, 128));    // 7 Gray
-        perfectColors.add(new Color(139, 68, 19));      // 8 Brown
-        perfectColors.add(new Color(255, 255, 0));      // 9 Yellow
-        perfectColors.add(new Color(0, 168, 168));      // 10 Teal
-        perfectColors.add(new Color(166, 166, 0));      // 11 Olive
-        perfectColors.add(new Color(252, 122, 240));    // 12 pink
+        // First set - light (No need for Purple, olive)
+
+        perfectColors.add(new Color(253, 112, 112));    // 1 Light Red
+        perfectColors.add(new Color(201, 248, 201));    // 2 Light Green
+        perfectColors.add(new Color(134, 200, 248));    // 3 Light Blue
+        perfectColors.add(new Color(255, 150, 72));     // 4 Light Brown
+        perfectColors.add(new Color(243, 184, 232));    // 5 Light pink
+        perfectColors.add(new Color(169, 169, 169));    // 6  Light Grey
+
+        // Forth set - bright acid colors
+        perfectColors.add(new Color(0, 255, 0));      // 7 Acid Green
+        perfectColors.add(new Color(255, 0, 0));      // 8 Acid Red
+        perfectColors.add(new Color(232, 0, 232));    // 9 Acid Purple
+        perfectColors.add(new Color(0, 0, 255));      // 10 Acid Blue
+        perfectColors.add(new Color(0, 255, 255));    // 11 Acid Teal
+
+        //Metallic color
+        main18Colors.add(new Color(255, 215, 0));       // 12 Golden paint
+
+        // Second set - regular not bright
+        perfectColors.add(new Color(176, 26, 26));      // 13 Red
+        perfectColors.add(new Color(0, 161, 0));        // 14 Green
+        perfectColors.add(new Color(34, 102, 250));     // 15 Blue
+        perfectColors.add(new Color(255, 165, 0));      // 16 Orange
+        perfectColors.add(new Color(141, 43, 141));     // 17 Purple
+        perfectColors.add(new Color(128, 128, 128));    // 18 Gray
+        perfectColors.add(new Color(139, 68, 19));      // 19 Brown
+        perfectColors.add(new Color(255, 255, 0));      // 20 Bright Yellow
+        perfectColors.add(new Color(0, 168, 168));      // 21 Teal
+        perfectColors.add(new Color(166, 166, 0));      // 22 Olive
+        perfectColors.add(new Color(252, 122, 240));    // 23 pink
 
         // Second set - dark (No need for dark yellow, orange, pink)
 
-        perfectColors.add(new Color(91, 1, 1));         // 13 Dark Red
-        perfectColors.add(new Color(1, 93, 45));        // 14 Dark Green
-        perfectColors.add(new Color(5, 5, 93));         // 15 Navy
-        perfectColors.add(new Color(50, 50, 50));       // 16 Dark grey
+        perfectColors.add(new Color(91, 1, 1));         // 24 Dark Red
+        perfectColors.add(new Color(1, 93, 45));        // 25 Dark Green
+        perfectColors.add(new Color(86, 1, 86));        // 26 Dark purple
+        perfectColors.add(new Color(89, 89, 1));        // 27  Dark Olive
+        perfectColors.add(new Color(68, 35, 19));       // 28  Dark Brown
+        perfectColors.add(new Color(2, 84, 84));        // 29 Dark Teal
+        perfectColors.add(new Color(50, 50, 50));       // 30 Dark grey
+        perfectColors.add(new Color(5, 5, 93));         // 31 Navy
+        perfectColors.add(new Color(0, 0, 0));          // 32 Black
 
 
-
-        perfectColors.add(new Color(86, 1, 86));      // Dark purple
-        perfectColors.add(new Color(2, 84, 84));    // Dark Teal
-        perfectColors.add(new Color(89, 89, 1));    // Dark Olive
-        perfectColors.add(new Color(68, 35, 19));    // Dark Brown
-
-        // Third set - light (No need for Purple, olive)
-
-        perfectColors.add(new Color(253, 112, 112));      //Light Red
-        perfectColors.add(new Color(201, 248, 201));      // Green
-        perfectColors.add(new Color(134, 200, 248));    // Medium Blue
-       // perfectColors.add(new Color(253, 253, 196));    // Yellow
-       // perfectColors.add(new Color(252, 194, 156));    // Orange
-        perfectColors.add(new Color(222, 112, 29));      // Brown
-       // perfectColors.add(new Color(213, 213, 213));  // Gray
-        perfectColors.add(new Color(243, 184, 232));  // pink
-
-        // Forth set - bright acid colors
-        perfectColors.add(new Color(0, 255, 0));      // Acid Green
-
-        perfectColors.add(new Color(255, 0, 0));      // Acid Red
-        perfectColors.add(new Color(232, 0, 232));    // Acid Purple
-        perfectColors.add(new Color(0, 0, 255));      // Acid Blue
-        perfectColors.add(new Color(0, 255, 255));    // Acid Teal
-
-        // 2 extra gray colors (Use sometimes)
-        perfectColors.add(new Color(169, 169, 169));  // Gray between light and regular
-        perfectColors.add(new Color(77, 77, 77));    // Grey between regular and dark
-
-
+       // perfectColors.add(new Color(77, 77, 77));    // Grey between regular and dark
 
     }
 
