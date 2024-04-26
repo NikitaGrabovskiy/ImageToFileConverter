@@ -56,115 +56,23 @@ public class SplitImageIntoStrokes {
         return result.toString();
     }
 
-/*
-    private String splitSingleColor(BufferedImage image, Color color, int colorNumber, ImageDisplay jFrame) {
-
-        int[] previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
-
-        if (previousCoordinates == null) {
-            return "";
-        }
-
-        int maxDipLength = 50;
-        Graphics graphics = image.getGraphics();
-
-        StringBuffer linesAndDotsForASingleColor = new StringBuffer("C" + colorNumber);
-
-        int dipLength = 0;
-
-        StringBuffer singleLine = new StringBuffer("L");
-
-        ArrayList<int[]> listOfDots = new ArrayList<>();
-
-        int countOfGeneratedLines = 0;
-        int countOfAttachedLines = 0;
-
-        while (true) {
-
-            int[] line = findLongestPossibleLine(new int[]{previousCoordinates[0], previousCoordinates[1]}, image, color.getRGB(), graphics);
-
-           // System.out.println(calculateLengthOfLine(line));
-
-            if (line != null && calculateLengthOfLine(line) != 0) {
-                dipLength += calculateLengthOfLine(line);
-                if (dipLength > maxDipLength) {
-                    // linesAndDotsForASingleColor.append(singleLine);
-                    singleLine.append("D");
-                    dipLength = 0;
-                }
-            }
-
-            if (line != null) {
-                countOfGeneratedLines++;
-                previousCoordinates = getNearPixelWithTheSameColor(new int[]{line[0], line[1]}, image, color.getRGB());
-            }
-
-            if (line == null || calculateLengthOfLine(line) == 0 || previousCoordinates == null) {
-
-                if (calculateLengthOfLine(line) == 0) {
-
-                    if (line[0] != line[2] || line[1] != line[3]) {
-                        throw new RuntimeException("It is not a dot");
-                    }
-                    System.out.println("INSIDE ADD DOT");
-                    listOfDots.add(line);
-                } else if (line != null) {
-                    countOfAttachedLines++;
-                    singleLine.append("," + line[2] + "-" + line[3]);
-                }
-                linesAndDotsForASingleColor.append(singleLine);
-                previousCoordinates = getRandomDotCoordinates(image, color.getRGB());
-                if (previousCoordinates == null) {
-                    break;
-                }
-
-                singleLine = new StringBuffer("L" + previousCoordinates[0] + "-" + previousCoordinates[1]);
-                continue;
-            }
-
-            //System.out.println(calculateLengthOfLine(line));
-
-            if (singleLine.toString().equals("L")) {
-                countOfAttachedLines++;
-                //  only for beginning of color
-                singleLine.append(line[0] + "-" + line[1] + "," + line[2] + "-" + line[3]);
-            } else {
-                countOfAttachedLines++;
-                singleLine.append("," + line[2] + "-" + line[3]);
-            }
-        }
-
-       // System.out.println("listOfDots.size()"+ listOfDots.size());
-
-        if (!listOfDots.isEmpty()) {
-            linesAndDotsForASingleColor.append("P");
-
-
-            // Sort dots to be as close to each other as possible
-
-            listOfDots.stream().forEach(dot -> linesAndDotsForASingleColor.append("," + dot[0] + "-" + dot[1]));
-        }
-
-        System.out.println("Count of generated lines "+countOfGeneratedLines);
-        System.out.println("Count of attached lines "+countOfAttachedLines);
-        System.out.println(linesAndDotsForASingleColor);
-
-        return linesAndDotsForASingleColor.toString();
-    }
-*/
-
-
     private int[] findLongestPossibleLine(int[] startPoint, BufferedImage image, int targetColor, Graphics graphics) {
 
         int count = 0;
         // System.out.println("_____________________");
         Map<Integer, int[]> map = new HashMap<>();
         while (count < 8) {
+
+
             int[] line = getRandomLine(startPoint, image, targetColor, count);
             if (line == null) {
                 count++;
                 continue;
             }
+
+
+            // Randomly return not longest line to remove the robot drawing effect
+
             map.put(calculateLengthOfLine(line), line);
             count++;
             //   System.out.println(calculateLengthOfLine(line));
@@ -173,6 +81,7 @@ public class SplitImageIntoStrokes {
         if (map.size() == 0) {
             return null;
         }
+
 
         int[] longestLine = map.get(Collections.max(map.keySet()));
 
@@ -332,7 +241,6 @@ public class SplitImageIntoStrokes {
 
         int numberOfDotsInALine = 0;
 
-        int countForDip = 0;
 
         while (true) {
 
@@ -352,7 +260,8 @@ public class SplitImageIntoStrokes {
                 //linesAndDotsForASingleColor.append("L" + singleLine);
                 int [] nearPoint = getNearPixelWithTheSameColor(new int[]{line[2], line[3]}, image, color.getRGB());
 
-                if(nearPoint == null || numberOfDotsInALine>12){
+                if(nearPoint == null || numberOfDotsInALine>12 || dipLength>65){
+                    dipLength = 0;
                     numberOfDotsInALine = 0;
                     //linesAndDotsForASingleColor.append("\nL" + singleLine.substring(1));
                     listOfStrings.add("\nL" + singleLine.substring(1));

@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class StaticValues {
 
@@ -9,7 +10,7 @@ public class StaticValues {
     // Generate 100 random designs - and select the best one
 
 
-
+    static Random random = new Random();
 
 
 
@@ -20,6 +21,14 @@ public class StaticValues {
 
     // Make sure that colors are added in order - it will be the first parameter
     // that will mean color
+
+    public static Random getRandom() {
+        return random;
+    }
+
+    public static void setRandom(Random random) {
+        StaticValues.random = random;
+    }
 
     public static Color defaultColor = new Color(1, 1, 1);
 
@@ -62,7 +71,7 @@ public class StaticValues {
         perfectColors.add(new Color(253, 112, 112));    // 1 Light Red
         perfectColors.add(new Color(201, 248, 201));    // 2 Light Green
         perfectColors.add(new Color(134, 200, 248));    // 3 Light Blue
-        perfectColors.add(new Color(255, 150, 72));     // 4 Light Brown
+        perfectColors.add(new Color(255, 150, 72));     // 4 Light Brown / Orange
         perfectColors.add(new Color(243, 184, 232));    // 5 Light pink
         perfectColors.add(new Color(169, 169, 169));    // 6  Light Grey
 

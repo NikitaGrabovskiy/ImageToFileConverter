@@ -55,10 +55,10 @@ public class ImageDisplay extends JFrame {
         label = new JLabel();
         add(label);
 
-        int imageNumber = 1;
+        int imageNumber = 60;
 
         // Choose the image file path
-        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/";
+        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/";
 
         BufferedImage image = Util.getImageFromFile(imagePath,imageNumber);
 
@@ -68,8 +68,11 @@ public class ImageDisplay extends JFrame {
 
     private void displayImage(BufferedImage image) {
 
-            image = resizeImage(image, 80, 106);
-            //image = resizeImage(image, 106, 80);
+           // image = resizeImage(image, 90, 120);
+       // image = resizeImage(image, 120, 90);
+
+       image = resizeImage(image, 80,106);
+           // image = resizeImage(image, 106, 80);
 
            // image = posterizeImage(image,16);
 

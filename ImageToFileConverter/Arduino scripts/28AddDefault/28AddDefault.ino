@@ -42,6 +42,7 @@ int currentY = 0;
 //int currentY = 400;
 
 int currentColor = -1;
+int countTillNextDefault = 0;
 void setup() {
 
   Serial.begin(9600);
@@ -66,11 +67,12 @@ void loop() {
 if(stop){return;}
 
 
-delay(7000);
-
+delay(5000);
+singleMethodTomoveBrushToXYLocation(0,0);
 
 //moveBrush(500,"UP");
 moveBrush(2250,"UP");
+
 
 //moveBrush(500,"DOWN");
 
@@ -84,7 +86,7 @@ Serial.println("FILE PROCESSED SUCCESSFULLY :");
 //Serial.print(fileProcessed);
 Serial.println("");
 
-singleMethodTomoveBrushToXYLocation(1,1);
+singleMethodTomoveBrushToXYLocation(0,0);
 
 stop = true;
 }
@@ -142,15 +144,10 @@ void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
   if(yDifference>0){digitalWrite(4,HIGH);}
   else{digitalWrite(4,LOW);}
 
-
-
-
-
+  
 
   // TODO : Add check if only one stepper needs to run
   
-
-
 
 
   // Get number of steps
@@ -209,18 +206,18 @@ void dipToColor(short colorNumber){
 int paintDip = 2250;
 int upPaintDip = 2400;
 
-int colorRow1 = 320;
-int colorRow2 = 375;
-int colorRow3 = 410;
-int colorRow4 = 450; 
+int colorRow1 = 315;
+int colorRow2 = 360;
+int colorRow3 = 400;
+int colorRow4 = 445; 
 
 int colorColumn1 = 60;
-int colorColumn2 = 90;
+int colorColumn2 = 95;
 int colorColumn3 = 130;
 int colorColumn4 = 170;
 int colorColumn5 = 205;
 int colorColumn6 = 240;
-int colorColumn7 = 270;
+int colorColumn7 = 275;
 int colorColumn8 = 310;
 
 int xCoordinate;
@@ -364,8 +361,8 @@ void processAndDraw(const String &input) {
         int x = points[0].toInt();
         int y = points[1].toInt();
 
-        int xForImage = (x*2.88) + 45;
-        int yForImage = (y*2.88) + 30;
+        int xForImage = (x*2.88) + 55;
+        int yForImage = (y*2.88) + 36;
 
         singleMethodTomoveBrushToXYLocation(xForImage,yForImage);
 
@@ -399,6 +396,14 @@ void processAndDraw(const String &input) {
     Serial.print(freeRam());
     Serial.println("");
     moveBrush(upDrawImageDip,"UP");
+
+    countTillNextDefault++;
+   if(countTillNextDefault > 1) {
+       countTillNextDefault=0;
+        singleMethodTomoveBrushToXYLocation(0,0);
+        runStepper(1,1,"DOWN");
+        runStepper(2,1,"DOWN");
+    }
 }
 
 String readLine(File &file) {

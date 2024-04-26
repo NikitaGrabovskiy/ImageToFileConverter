@@ -31,3 +31,34 @@ dipToColor(29);
 dipToColor(30);
 dipToColor(31);
 dipToColor(32);
+
+
+void runStepper(int stepperNumber,long steps,String direction){
+
+  // to control direction
+  //First stepper
+  //digitalWrite(2,LOW);
+  //Second stepper
+  //digitalWrite(4,LOW);
+  int directionPin;
+
+  // To run stepper
+  int controlPin;
+
+ if (stepperNumber == 1) {
+    directionPin = 2;
+    controlPin = 3;
+  } else if (stepperNumber == 2) {
+    directionPin = 4;
+    controlPin = 5;
+  }
+
+  if(direction.equals("DOWN")){ digitalWrite(directionPin,LOW); }
+  else if (direction.equals("UP")){ digitalWrite(directionPin,HIGH); }
+
+  for (long i = 0; i < steps; i++) {
+    digitalWrite(controlPin,LOW);
+    digitalWrite(controlPin,HIGH);
+    delayMicroseconds(85);
+  }
+}

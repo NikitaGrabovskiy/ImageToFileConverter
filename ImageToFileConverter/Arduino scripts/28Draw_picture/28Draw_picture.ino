@@ -1,37 +1,31 @@
 #include <SPI.h>
 #include <SD.h>
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 //                           GLOBAL CONSTANTS
+//
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// Put them in functions 
+
+
 const float STEPS_IN_ONE_MM = 639.4604;
+
 
 // TODO: 
 
      // CONNECT every scrue with a stripe - so there is no way it getting lose or disconnected
-
-            // !!!
-     //1. ADD check for x length
+     
+     //1. ADD check for x and y length (So it will never reach limit)
      //1. ADD check to run XY only if brush is up
-     //1. ADD check if X or Y is 0 for simontanious run
-     //1. Add case if  x distance / y is one
-     //1. Chant long to int where it is possible to save memory
-
-
-     // 1. Priority: Function that moves to any direction on board both axes at the same time
-     // 1. Function that calculates parameters to run to a particular location from the current point
-     // 1. Function that convert image code to instructions
-     // 1. Add steps for update
-
-     // LATER: 
-     // 1. Later function that reads from image
+     //1. Change long to int or to short where it is possible to save memory
+     //1. Add steps for update
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                           GLOBAL VARIABLES
+//
+//                                     GLOBAL VARIABLES
+//
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 bool stop = false;
@@ -42,6 +36,16 @@ int currentY = 0;
 //int currentY = 400;
 
 int currentColor = -1;
+int paintedNumberOfLines = 0;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                   GLOBAL VARIABLES
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 void setup() {
 
   Serial.begin(9600);
@@ -65,26 +69,18 @@ void setup() {
 void loop() {
 if(stop){return;}
 
+delay(5000);
 
-delay(7000);
-
-
-//moveBrush(500,"UP");
-moveBrush(2250,"UP");
-
-//moveBrush(500,"DOWN");
-
-//singleMethodTomoveBrushToXYLocation(40,32);
-
+moveBrush(2700,"UP");
+singleMethodTomoveBrushToXYLocation(0,0);
 
 bool fileProcessed = processFile();
 
 
 Serial.println("FILE PROCESSED SUCCESSFULLY :");
-//Serial.print(fileProcessed);
 Serial.println("");
 
-singleMethodTomoveBrushToXYLocation(1,1);
+singleMethodTomoveBrushToXYLocation(0,0);
 
 stop = true;
 }
@@ -92,10 +88,8 @@ stop = true;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//
-//                PLACE FOR ALL THE UTIL METHODS 
-//
-//                
+//                                              UTIL METHODS 
+//               
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -141,17 +135,6 @@ void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
   else{digitalWrite(2,LOW);}
   if(yDifference>0){digitalWrite(4,HIGH);}
   else{digitalWrite(4,LOW);}
-
-
-
-
-
-
-  // TODO : Add check if only one stepper needs to run
-  
-
-
-
 
   // Get number of steps
   float xSteps = abs(xDifference)*STEPS_IN_ONE_MM;
@@ -206,21 +189,21 @@ void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
 
 void dipToColor(short colorNumber){
 
-int paintDip = 2250;
-int upPaintDip = 2400;
+int paintDip = 2600;
+int upPaintDip = 2800;
 
 int colorRow1 = 320;
-int colorRow2 = 375;
+int colorRow2 = 368;
 int colorRow3 = 410;
 int colorRow4 = 450; 
 
 int colorColumn1 = 60;
-int colorColumn2 = 90;
+int colorColumn2 = 98;
 int colorColumn3 = 130;
 int colorColumn4 = 170;
 int colorColumn5 = 205;
 int colorColumn6 = 240;
-int colorColumn7 = 270;
+int colorColumn7 = 278;
 int colorColumn8 = 310;
 
 int xCoordinate;
@@ -262,16 +245,6 @@ moveBrush(upPaintDip,"UP");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-  //            ACTIONS:
-
-  // DEFAULT_POSITION
-  // EXTEND_PAINT
-  // EXTEND_CANVAS
-  // EXTEND_WATER
-  // BRUSH_VIBRATION
-  // STABLE_BRUSH_CHANGE
 
 void moveBrush(int time,String direction){
   if (direction.equals("UP")){
@@ -345,9 +318,7 @@ void processAndDraw(const String &input) {
        return;
        }
 
-       
-
-    int drawImageDip = 700;
+    int drawImageDip = 657;
     int upDrawImageDip = 900;
     int pairCount = 0;
     String* pairs = split(input, ',', pairCount);
@@ -364,8 +335,8 @@ void processAndDraw(const String &input) {
         int x = points[0].toInt();
         int y = points[1].toInt();
 
-        int xForImage = (x*2.88) + 45;
-        int yForImage = (y*2.88) + 30;
+        int xForImage = (x*2.88) + 65;
+        int yForImage = (y*2.88) + 55;
 
         singleMethodTomoveBrushToXYLocation(xForImage,yForImage);
 
@@ -399,6 +370,16 @@ void processAndDraw(const String &input) {
     Serial.print(freeRam());
     Serial.println("");
     moveBrush(upDrawImageDip,"UP");
+    
+    //paintedNumberOfLines++;
+    
+    if(paintedNumberOfLines>60){
+    paintedNumberOfLines=0;
+    Serial.println("Detting x and y to 0");
+    singleMethodTomoveBrushToXYLocation(0,0);
+    runStepper(1,3,"DOWN");
+    runStepper(2,3,"DOWN");
+    }
 }
 
 String readLine(File &file) {
@@ -414,8 +395,7 @@ String readLine(File &file) {
 }
 
 
-                   // METHODS FOR DEBUGGIN
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void runStepper(int stepperNumber,long steps,String direction){
 
   // to control direction
@@ -427,7 +407,7 @@ void runStepper(int stepperNumber,long steps,String direction){
 
   // To run stepper
   int controlPin;
-  
+
  if (stepperNumber == 1) {
     directionPin = 2;
     controlPin = 3;
@@ -446,6 +426,13 @@ void runStepper(int stepperNumber,long steps,String direction){
   }
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                   METHODS FOR DEBUGGIN
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 int freeRam() {
   extern int __heap_start, *__brkval;
   int v;
@@ -453,11 +440,8 @@ int freeRam() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//                            DOCUMENTATION
-//
+//                                      DOCUMENTATION
 //                
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
