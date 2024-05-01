@@ -71,7 +71,6 @@ delay(5000);
 
 
 
-delay(5000);
 moveBrush(2250,"UP");
 moveBrush(2250,"DOWN");
 moveBrush(2250,"UP");

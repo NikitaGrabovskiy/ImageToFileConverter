@@ -55,12 +55,30 @@ public class ImageDisplay extends JFrame {
         label = new JLabel();
         add(label);
 
-        int imageNumber = 60;
 
+
+
+
+
+
+        RandomImageConverter randomImageConverter = new RandomImageConverter();
+        for(int x = 0;x<50;x++){
+            randomImageConverter.generateRandomImages();
+        }
+
+
+        int imageNumber = 4;
         // Choose the image file path
-        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/";
+        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/";
 
         BufferedImage image = Util.getImageFromFile(imagePath,imageNumber);
+
+
+
+
+
+
+
 
         // Read and display the image
         displayImage(image);
@@ -68,16 +86,16 @@ public class ImageDisplay extends JFrame {
 
     private void displayImage(BufferedImage image) {
 
-           // image = resizeImage(image, 90, 120);
+           // image = resizeImage(image, 100, 133);
        // image = resizeImage(image, 120, 90);
 
        image = resizeImage(image, 80,106);
-           // image = resizeImage(image, 106, 80);
+       // image = resizeImage(image, 106, 80);
 
            // image = posterizeImage(image,16);
 
             //image = invertColors(image);
-           // image = adjustRGBColors(image,0,30,0);
+      // image = adjustRGBColors(image,0,40,0);
 
              image = convertToClosestColors(image,StaticValues.perfectColors);
 
@@ -105,7 +123,7 @@ public class ImageDisplay extends JFrame {
         });
     }
 
-    public BufferedImage resizeImage(BufferedImage originalImage, int newWidth, int newHeight) {
+    public static BufferedImage resizeImage(BufferedImage originalImage, int newWidth, int newHeight) {
         Image resultingImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
 
         // Create a blank image with the new dimensions
@@ -119,7 +137,7 @@ public class ImageDisplay extends JFrame {
         return resizedImage;
     }
 
-    public BufferedImage convertToClosestColors(BufferedImage originalImage, ArrayList<Color> targetColors) {
+    public static BufferedImage convertToClosestColors(BufferedImage originalImage, ArrayList<Color> targetColors) {
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
 
@@ -137,7 +155,7 @@ public class ImageDisplay extends JFrame {
         return convertedImage;
     }
 
-    private Color findClosestColor(Color targetColor, ArrayList<Color> colorList) {
+    private static Color findClosestColor(Color targetColor, ArrayList<Color> colorList) {
         double minDistance = Double.MAX_VALUE;
         Color closestColor = null;
 
@@ -153,28 +171,12 @@ public class ImageDisplay extends JFrame {
         return closestColor;
     }
 
-    private double calculateColorDistance(Color color1, Color color2) {
+    private static double calculateColorDistance(Color color1, Color color2) {
         int redDiff = color1.getRed() - color2.getRed();
         int greenDiff = color1.getGreen() - color2.getGreen();
         int blueDiff = color1.getBlue() - color2.getBlue();
 
         return Math.sqrt(redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff);
-    }
-
-    public static void print3DArray(int[][][] array) {
-        for (int i = 0; i < array.length; i++) {
-            System.out.println("Array " + i + ":");
-            for (int j = 0; j < array[i].length; j++) {
-                System.out.print("  Inner Array " + j + ": [");
-                for (int k = 0; k < array[i][j].length; k++) {
-                    System.out.print(array[i][j][k]);
-                    if (k < array[i][j].length - 1) {
-                        System.out.print(", ");
-                    }
-                }
-                System.out.println("]");
-            }
-        }
     }
 
     public static BufferedImage magnifyPixels(BufferedImage originalImage, int squareSize) {

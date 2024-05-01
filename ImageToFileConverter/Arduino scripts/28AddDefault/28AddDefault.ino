@@ -66,12 +66,20 @@ void setup() {
 void loop() {
 if(stop){return;}
 
-
 delay(5000);
+moveBrush(2250,"UP");
+moveBrush(2250,"Down");
+moveBrush(2250,"UP");
+moveBrush(2250,"Down");
+moveBrush(2250,"UP");
+moveBrush(2250,"Down");
+moveBrush(2250,"UP");
+
+
 singleMethodTomoveBrushToXYLocation(0,0);
 
 //moveBrush(500,"UP");
-moveBrush(2250,"UP");
+
 
 
 //moveBrush(500,"DOWN");
@@ -112,6 +120,11 @@ bool processFile(){
     while (myFile.available()) {
       String line = readLine(myFile);
       Serial.println(line);
+
+
+      // To prevent sudden moves
+      delayMicroseconds(100);
+      
       processAndDraw(line);
     }
     // close the file:
@@ -362,7 +375,7 @@ void processAndDraw(const String &input) {
         int y = points[1].toInt();
 
         int xForImage = (x*2.88) + 55;
-        int yForImage = (y*2.88) + 36;
+        int yForImage = (y*2.88) + 39;
 
         singleMethodTomoveBrushToXYLocation(xForImage,yForImage);
 
@@ -398,11 +411,14 @@ void processAndDraw(const String &input) {
     moveBrush(upDrawImageDip,"UP");
 
     countTillNextDefault++;
-   if(countTillNextDefault > 1) {
+   if(countTillNextDefault > 100) {
+      Serial.println("countTillNextDefault");
+      Serial.print(countTillNextDefault);
+      Serial.print("");
        countTillNextDefault=0;
         singleMethodTomoveBrushToXYLocation(0,0);
-        runStepper(1,1,"DOWN");
-        runStepper(2,1,"DOWN");
+        runStepper(1,1000,"DOWN");
+        runStepper(2,1000,"DOWN");
     }
 }
 
