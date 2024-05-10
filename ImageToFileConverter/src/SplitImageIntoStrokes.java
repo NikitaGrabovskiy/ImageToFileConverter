@@ -293,8 +293,8 @@ public class SplitImageIntoStrokes {
     public void addDipIndicator(ArrayList<String> lines) {
         for (String line : lines) {
             int[] segmentNumbers = calculateDipCount(line);
-            System.out.println("LINE "+line);
-            System.out.println(Arrays.toString(segmentNumbers));
+           // System.out.println("LINE "+line);
+            //System.out.println(Arrays.toString(segmentNumbers));
             for (int a = 0; a<segmentNumbers.length;){
                 dipCount+=calculateLengthOfLine(new int[]{segmentNumbers[0],segmentNumbers[1],segmentNumbers[2],segmentNumbers[3]});
                 a+=4;
@@ -306,7 +306,7 @@ public class SplitImageIntoStrokes {
                 dipCount = 0;
             }
 
-            System.out.println(dipCount);
+            //System.out.println(dipCount);
         }
     }
 

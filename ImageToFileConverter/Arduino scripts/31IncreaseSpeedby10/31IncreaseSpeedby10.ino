@@ -66,9 +66,10 @@ void setup() {
 void loop() {
 if(stop){return;}
 
+delay(10000);
 
-delay(5000);
-moveBrush(2250,"UP");
+moveBrush(2500,"UP");
+
 singleMethodTomoveBrushToXYLocation(0,0);
 
 
@@ -79,7 +80,7 @@ Serial.println("FILE PROCESSED SUCCESSFULLY :");
 //Serial.print(fileProcessed);
 Serial.println("");
 
-singleMethodTomoveBrushToXYLocation(0,0);
+singleMethodTomoveBrushToXYLocation(0,150);
 
 stop = true;
 }
@@ -105,6 +106,11 @@ bool processFile(){
     while (myFile.available()) {
       String line = readLine(myFile);
       Serial.println(line);
+
+
+      // To prevent sudden moves
+      delayMicroseconds(100);
+      
       processAndDraw(line);
     }
     // close the file:
@@ -121,7 +127,7 @@ bool processFile(){
 void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
 
   // Delay to prevent sudden move
-  delayMicroseconds(100);
+  delayMicroseconds(300);
 
   long xDifference = newXCoordinate-currentX;
   long yDifference = newYCoordinate-currentY;
@@ -196,7 +202,7 @@ void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
 
 void dipToColor(short colorNumber){
 
-int paintDip = 2250;
+int paintDip = 2200;
 int upPaintDip = 2400;
 
 int colorRow1 = 315;
@@ -264,12 +270,12 @@ moveBrush(upPaintDip,"UP");
   // STABLE_BRUSH_CHANGE
 
 void moveBrush(int time,String direction){
-  if (direction.equals("UP")){
+  if (direction.equals("DOWN")){
       digitalWrite(6, LOW);
         // extend the actuator
       digitalWrite(10, HIGH);
       digitalWrite(9, LOW);
-  } else if (direction.equals("DOWN")){
+  } else if (direction.equals("UP")){
        digitalWrite(6, HIGH);
         // retract the actuator
        digitalWrite(10, LOW);
@@ -331,13 +337,12 @@ void processAndDraw(const String &input) {
        Serial.println("Diping color");
        Serial.print(currentColor);
 
-        dipToColor(currentColor);
+        dipToColor(currentColor); 
        return;
        }
 
        
-
-    int drawImageDip = 700;
+    int drawImageDip = 500;
     int upDrawImageDip = 900;
     int pairCount = 0;
     String* pairs = split(input, ',', pairCount);
@@ -355,7 +360,7 @@ void processAndDraw(const String &input) {
         int y = points[1].toInt();
 
         int xForImage = (x*2.88) + 55;
-        int yForImage = (y*2.88) + 36;
+        int yForImage = (y*2.88) + 39;
 
         singleMethodTomoveBrushToXYLocation(xForImage,yForImage);
 
@@ -391,11 +396,14 @@ void processAndDraw(const String &input) {
     moveBrush(upDrawImageDip,"UP");
 
     countTillNextDefault++;
-   if(countTillNextDefault > 1) {
+   if(countTillNextDefault > 100) {
+      Serial.println("countTillNextDefault");
+      Serial.print(countTillNextDefault);
+      Serial.print("");
        countTillNextDefault=0;
         singleMethodTomoveBrushToXYLocation(0,0);
-        runStepper(1,1,"DOWN");
-        runStepper(2,1,"DOWN");
+        runStepper(1,1000,"DOWN");
+        runStepper(2,1000,"DOWN");
     }
 }
 

@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class ImageDisplay extends JFrame {
@@ -57,27 +60,19 @@ public class ImageDisplay extends JFrame {
 
 
 
-
-
-
-
-        RandomImageConverter randomImageConverter = new RandomImageConverter();
+/*        RandomImageConverter randomImageConverter = new RandomImageConverter();
         for(int x = 0;x<50;x++){
             randomImageConverter.generateRandomImages();
-        }
+        }*/
 
 
-        int imageNumber = 4;
+        int imageNumber = 37;
         // Choose the image file path
-        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/";
+        // String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/TODO/Converted/WithoutDots/";
+        //String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/";
+        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/ready/";
 
         BufferedImage image = Util.getImageFromFile(imagePath,imageNumber);
-
-
-
-
-
-
 
 
         // Read and display the image
@@ -96,8 +91,7 @@ public class ImageDisplay extends JFrame {
 
             //image = invertColors(image);
       // image = adjustRGBColors(image,0,40,0);
-
-             image = convertToClosestColors(image,StaticValues.perfectColors);
+        image = convertToClosestColors(image,StaticValues.perfectColors);
 
             SplitImageIntoStrokes splitImageIntoStrokes = new SplitImageIntoStrokes();
 
@@ -109,6 +103,13 @@ public class ImageDisplay extends JFrame {
 
         String readyCode = lines.replace("L", "");
          System.out.println(readyCode);
+
+        try {
+            String filePath = "/Users/nikita/Desktop/1.txt";
+            Files.write(Paths.get(filePath), readyCode.trim().getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //System.out.println(lines);
 
@@ -160,6 +161,13 @@ public class ImageDisplay extends JFrame {
         Color closestColor = null;
 
         for (Color candidateColor : colorList) {
+
+
+
+/*            if(candidateColor.equals(StaticValues.perfectColors.get(2))){
+                continue;
+            }*/
+
             double distance = calculateColorDistance(targetColor, candidateColor);
 
             if (distance < minDistance) {

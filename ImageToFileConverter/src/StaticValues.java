@@ -76,24 +76,24 @@ public class StaticValues {
         perfectColors.add(new Color(169, 169, 169));    // 6  Light Grey
 
         // Forth set - bright acid colors
-        perfectColors.add(new Color(0, 255, 0));      // 7 Acid Green
-        perfectColors.add(new Color(255, 0, 0));      // 8 Acid Red
-        perfectColors.add(new Color(232, 0, 232));    // 9 Acid Purple
-        perfectColors.add(new Color(0, 0, 255));      // 10 Acid Blue
-        perfectColors.add(new Color(0, 255, 255));    // 11 Acid Teal
+        perfectColors.add(new Color(0, 255, 0));      // 7 Acid Green (Why is not used ?)
+        perfectColors.add(new Color(255, 0, 0));      // 8 Acid Red (CHANGE)
+        perfectColors.add(new Color(232, 0, 232));    // 9 Acid Purple (CHANGE to light purple) (Why is not used ?)
+        perfectColors.add(new Color(0, 0, 255));      // 10 Acid Blue ((CHANGE) Why is not used  ?)
+        perfectColors.add(new Color(0, 255, 255));    // 11 Aqua
 
         //Metallic color
         main18Colors.add(new Color(255, 215, 0));       // 12 Golden paint
 
         // Second set - regular not bright
         perfectColors.add(new Color(176, 26, 26));      // 13 Red
-        perfectColors.add(new Color(0, 161, 0));        // 14 Green
+        perfectColors.add(new Color(0, 161, 0));        // 14 Green (Why is not used ?)
         perfectColors.add(new Color(34, 102, 250));     // 15 Blue
         perfectColors.add(new Color(255, 165, 0));      // 16 Orange
         perfectColors.add(new Color(141, 43, 141));     // 17 Purple
         perfectColors.add(new Color(128, 128, 128));    // 18 Gray
         perfectColors.add(new Color(139, 68, 19));      // 19 Brown
-        perfectColors.add(new Color(255, 255, 0));      // 20 Bright Yellow
+        perfectColors.add(new Color(255, 255, 0));      // 20 Bright Yellow (Why is not used ?)
         perfectColors.add(new Color(0, 168, 168));      // 21 Teal
         perfectColors.add(new Color(166, 166, 0));      // 22 Olive
         perfectColors.add(new Color(252, 122, 240));    // 23 pink

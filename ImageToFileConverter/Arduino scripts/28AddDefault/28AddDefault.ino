@@ -67,24 +67,11 @@ void loop() {
 if(stop){return;}
 
 delay(5000);
-moveBrush(2250,"UP");
-moveBrush(2250,"Down");
-moveBrush(2250,"UP");
-moveBrush(2250,"Down");
-moveBrush(2250,"UP");
-moveBrush(2250,"Down");
-moveBrush(2250,"UP");
 
+moveBrush(2500,"DOWN");
 
+moveBrush(2500,"UP");
 singleMethodTomoveBrushToXYLocation(0,0);
-
-//moveBrush(500,"UP");
-
-
-
-//moveBrush(500,"DOWN");
-
-//singleMethodTomoveBrushToXYLocation(40,32);
 
 
 bool fileProcessed = processFile();
