@@ -7,9 +7,10 @@ import java.util.Random;
 public class RandomImageConverter {
 
     public void generateRandomImages() {
-        File sourceFolder = new File("/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/Vertical");
+        File sourceFolder = new File("/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/Vertical/selectedDesigns/");
+       // File sourceFolder = new File("/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/Horizontal/");
         File destinationFolder = new File("/Users/nikita/Desktop/randomlyGenerated");
-        File destinationDisplayFolder = new File("/Users/nikita/Desktop/display");
+       // File destinationDisplayFolder = new File("/Users/nikita/Desktop/display");
         Random random = new Random();
 
         // Ensure the destination folder exists
@@ -25,17 +26,20 @@ public class RandomImageConverter {
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
                         BufferedImage modifiedImage = ImageDisplay.adjustRGBColors(originalImage,random.nextInt(100),random.nextInt(100),random.nextInt(100));
-                        modifiedImage = ImageDisplay.resizeImage(modifiedImage, 80,106);
+                        modifiedImage = ImageDisplay.resizeImage(modifiedImage, 100,133);
+                      //  modifiedImage = ImageDisplay.resizeImage(modifiedImage, 133,100);
                         modifiedImage = ImageDisplay.convertToClosestColors(modifiedImage,StaticValues.perfectColors);
                         String fileName = ""+random.nextInt(999999999)+".jpg";
                         File outputFile = new File(destinationFolder, fileName);
                         ImageIO.write(modifiedImage, getFileExtension(file.getName()), outputFile);
+                      //  System.out.println("Successfully saved !!!");
 
-                        BufferedImage displayImage = ImageDisplay.magnifyPixels(modifiedImage, 4);
-                        File outputDisplayFile = new File(destinationDisplayFolder, fileName);
-                        ImageIO.write(displayImage, getFileExtension(file.getName()), outputDisplayFile);
+                        // Save to display
+                      //  BufferedImage displayImage = ImageDisplay.magnifyPixels(modifiedImage, 4);
+                       // File outputDisplayFile = new File(destinationDisplayFolder, fileName);
+                      //  ImageIO.write(displayImage, getFileExtension(file.getName()), outputDisplayFile);
 
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

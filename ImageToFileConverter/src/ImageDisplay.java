@@ -59,18 +59,17 @@ public class ImageDisplay extends JFrame {
         add(label);
 
 
-
 /*        RandomImageConverter randomImageConverter = new RandomImageConverter();
         for(int x = 0;x<50;x++){
-            randomImageConverter.generateRandomImages();
+                randomImageConverter.generateRandomImages();
         }*/
 
 
-        int imageNumber = 37;
-        // Choose the image file path
-        // String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/TODO/Converted/WithoutDots/";
+        int imageNumber = 18;
+        //Choose the image file path
+         String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/TODO/Converted/WithoutDots100by133/TODO/";
         //String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/";
-        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/ready/";
+        //String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/ready/";
 
         BufferedImage image = Util.getImageFromFile(imagePath,imageNumber);
 
@@ -81,10 +80,10 @@ public class ImageDisplay extends JFrame {
 
     private void displayImage(BufferedImage image) {
 
-           // image = resizeImage(image, 100, 133);
-       // image = resizeImage(image, 120, 90);
+            image = resizeImage(image, 100, 133);
+     //   image = resizeImage(image, 133, 100);
 
-       image = resizeImage(image, 80,106);
+     //  image = resizeImage(image, 80,106);
        // image = resizeImage(image, 106, 80);
 
            // image = posterizeImage(image,16);
@@ -96,6 +95,12 @@ public class ImageDisplay extends JFrame {
             SplitImageIntoStrokes splitImageIntoStrokes = new SplitImageIntoStrokes();
 
             String lines = splitImageIntoStrokes.splitImage(image,StaticValues.perfectColors,this);
+
+        //lines = lines.replace("C18","C32");
+        lines = lines.replace("C28","C32");
+        lines = lines.replace("C30","C31");
+
+        //lines = lines.replace("C6","C18");
 
           image = ImageDrawerFromString.drawImageFromString(lines,image.getWidth(),image.getHeight(),StaticValues.perfectColors);
 

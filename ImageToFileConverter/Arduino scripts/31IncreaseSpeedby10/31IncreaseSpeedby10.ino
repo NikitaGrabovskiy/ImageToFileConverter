@@ -66,7 +66,7 @@ void setup() {
 void loop() {
 if(stop){return;}
 
-delay(10000);
+delay(7000);
 
 moveBrush(2500,"UP");
 
@@ -97,7 +97,7 @@ stop = true;
 
 bool processFile(){
 
- String fileName = "image.txt";
+ String fileName = "1.txt";
  File myFile = SD.open(fileName);
  Serial.println("BEFORE OPENING FILE");
   if (myFile) {
@@ -202,8 +202,8 @@ void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
 
 void dipToColor(short colorNumber){
 
-int paintDip = 2200;
-int upPaintDip = 2400;
+int paintDip = 2600;
+int upPaintDip = 2800;
 
 int colorRow1 = 315;
 int colorRow2 = 360;
@@ -341,9 +341,15 @@ void processAndDraw(const String &input) {
        return;
        }
 
-       
-    int drawImageDip = 500;
-    int upDrawImageDip = 900;
+
+    //FOR Pannel
+   // int drawImageDip = 1220;
+
+    //FOR Canvas 
+    int drawImageDip = 900;
+
+    
+    int upDrawImageDip = 1300;
     int pairCount = 0;
     String* pairs = split(input, ',', pairCount);
     bool firstDot = true;
@@ -359,8 +365,8 @@ void processAndDraw(const String &input) {
         int x = points[0].toInt();
         int y = points[1].toInt();
 
-        int xForImage = (x*2.88) + 55;
-        int yForImage = (y*2.88) + 39;
+        int xForImage = (x*2.3) + 55;
+        int yForImage = (y*2.3) + 39;
 
         singleMethodTomoveBrushToXYLocation(xForImage,yForImage);
 
@@ -477,9 +483,9 @@ int freeRam() {
 //                      Picture 12 inch size (Slighly more than actual size)
 //  30.6 sm 
 
-//                      Image proportions : 23 X 30.6 are the same as  80 px X 106 px (1 X 1,33)
+//                      Image proportions : 23 X 30.6 are the same as  100 px X 133 px (1 X 1,33)
 
-// paint brush size = 230 / 80 = 2.88
+// paint brush size = 230 / 100 = 2.3
 
 // Steps for 1 brush stroke size is 0.23/0.00015635 = 1471 steps (for 100 px X 133 px image)
 
