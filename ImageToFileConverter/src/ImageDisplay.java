@@ -65,9 +65,10 @@ public class ImageDisplay extends JFrame {
         }*/
 
 
-        int imageNumber = 18;
+        int imageNumber =3;
         //Choose the image file path
-         String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/TODO/Converted/WithoutDots100by133/TODO/";
+        String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/TODO/Converted/WithoutDots120by160/";
+        // String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/TODO/Converted/WithoutDots100by133/TODO/";
         //String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/";
         //String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/ready/";
 
@@ -80,7 +81,10 @@ public class ImageDisplay extends JFrame {
 
     private void displayImage(BufferedImage image) {
 
-            image = resizeImage(image, 100, 133);
+
+        image = resizeImage(image, 120, 160);
+
+           // image = resizeImage(image, 100, 133);
      //   image = resizeImage(image, 133, 100);
 
      //  image = resizeImage(image, 80,106);
@@ -96,9 +100,11 @@ public class ImageDisplay extends JFrame {
 
             String lines = splitImageIntoStrokes.splitImage(image,StaticValues.perfectColors,this);
 
+           // lines.replace("\n\n","\n");
+
         //lines = lines.replace("C18","C32");
-        lines = lines.replace("C28","C32");
-        lines = lines.replace("C30","C31");
+        //lines = lines.replace("C28","C32");
+       // lines = lines.replace("C30","C31");
 
         //lines = lines.replace("C6","C18");
 

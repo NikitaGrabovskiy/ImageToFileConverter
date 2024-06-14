@@ -10,6 +10,16 @@
 // Put them in functions 
 const float STEPS_IN_ONE_MM = 639.4604;
 
+const int paintDip = 4600;
+const int upPaintDip = 4700;
+
+    //FOR Pannel
+//const int drawImageDip = 1220;
+
+    //FOR Canvas 
+const int drawImageDip = 2200;
+const int upDrawImageDip = 2300;
+
 // TODO: 
 
      // CONNECT every scrue with a stripe - so there is no way it getting lose or disconnected
@@ -66,9 +76,9 @@ void setup() {
 void loop() {
 if(stop){return;}
 
-delay(7000);
+delay(4000);
 
-moveBrush(2500,"UP");
+moveBrush(6000,"UP");
 
 singleMethodTomoveBrushToXYLocation(0,0);
 
@@ -202,22 +212,19 @@ void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
 
 void dipToColor(short colorNumber){
 
-int paintDip = 1000;
-int upPaintDip = 2800;
+int colorRow1 = 255;
+int colorRow2 = colorRow1 + 40;
+int colorRow3 = colorRow2 + 40;
+int colorRow4 = colorRow3 + 40; 
 
-int colorRow1 = 315;
-int colorRow2 = 360;
-int colorRow3 = 400;
-int colorRow4 = 445; 
-
-int colorColumn1 = 60;
-int colorColumn2 = 95;
-int colorColumn3 = 130;
-int colorColumn4 = 170;
-int colorColumn5 = 205;
-int colorColumn6 = 240;
-int colorColumn7 = 275;
-int colorColumn8 = 310;
+int colorColumn1 = 12;
+int colorColumn2 = colorColumn1+35;
+int colorColumn3 = colorColumn2+35;
+int colorColumn4 = colorColumn3+35;
+int colorColumn5 = colorColumn4+40;
+int colorColumn6 = colorColumn5+35;
+int colorColumn7 = colorColumn6+35;
+int colorColumn8 = colorColumn7+35;
 
 int xCoordinate;
 int yCoordinate;
@@ -249,7 +256,7 @@ if( colorNumber == 1 || colorNumber == 9 || colorNumber == 17 || colorNumber == 
 } else if( colorNumber == 8 || colorNumber == 16 || colorNumber == 24 || colorNumber == 32 ){
   yCoordinate = colorColumn8;
 } 
-
+ 
 singleMethodTomoveBrushToXYLocation(xCoordinate,yCoordinate);
 
 moveBrush(paintDip,"DOWN");
@@ -341,15 +348,6 @@ void processAndDraw(const String &input) {
        return;
        }
 
-
-    //FOR Pannel
-   // int drawImageDip = 1220;
-
-    //FOR Canvas 
-    int drawImageDip = 400;
-
-    
-    int upDrawImageDip = 700;
     int pairCount = 0;
     String* pairs = split(input, ',', pairCount);
     bool firstDot = true;

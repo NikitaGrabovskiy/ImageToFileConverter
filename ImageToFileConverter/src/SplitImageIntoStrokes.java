@@ -38,7 +38,6 @@ public class SplitImageIntoStrokes {
 
         StringBuffer result = new StringBuffer();
 
-        int count = 0;
         for (int a = 0; a < colors.size(); a++) {
 
             // Skip white color
@@ -46,11 +45,14 @@ public class SplitImageIntoStrokes {
                 continue;
             }
 
-            result.append(splitSingleColorSimplified(image, colors.get(a), a, jFrame));
-/*            count++;
-            if(count>20){
-                break;
-            }*/
+            String colorLayer = splitSingleColorSimplified(image, colors.get(a), a, jFrame);
+            result.append(colorLayer);
+
+            if(colorLayer!=null && !colorLayer.isEmpty()){
+                String reversed = reverseSegmentsInLines(colorLayer);
+                // TODO - remove dots
+                result.append(reversed);
+            }
         }
 
         return result.toString();
@@ -323,5 +325,85 @@ public class SplitImageIntoStrokes {
         }
 
         return numbers;
+    }
+
+    public String reverseSegmentsInLines(String input) {
+        // Split the input string into lines
+        String[] lines = input.split("\n");
+
+        // Create a StringBuilder to build the reversed output
+        StringBuilder reversed = new StringBuilder();
+
+        // Append lines in reverse order
+        for (int i = lines.length - 1; i >= 0; i--) {
+            String[] segments = lines[i].split(",");
+
+            if(segments[0].startsWith("C") || segments[0].trim().isEmpty()){
+                continue;
+            }
+
+            // Reverse the order of segments in each line
+            for (int j = segments.length - 1; j >= 0; j--) {
+                reversed.append(segments[j]);
+                if (j != 0) {
+                    reversed.append(",");
+                }
+            }
+
+            if (i != 0) {
+                reversed.append("\n");
+            }
+        }
+
+      //  reversed.replace(reversed.lastIndexOf("\n"),reversed.lastIndexOf("\n"),"");
+
+        return "\n"+removeLastCharacter(reversed.toString());
+    }
+
+    public String removeLinesWithTwoSegments(String input) {
+        // Split the input string into lines
+        String[] lines = input.split("\n");
+
+        // Create a StringBuilder to build the filtered output
+        StringBuilder filtered = new StringBuilder();
+
+        for (String line : lines) {
+            String[] segments = line.split(",");
+            if (segments.length > 2 ||(segments.length==2 && calculateLengthOfLine(convertStringToIntArray(segments[0]+segments[1]))>2) ) {
+                filtered.append(line).append("\n");
+            }
+        }
+
+        // Remove the trailing newline character if present
+        if (filtered.length() > 0 && filtered.charAt(filtered.length() - 1) == '\n') {
+            filtered.deleteCharAt(filtered.length() - 1);
+        }
+
+        return filtered.toString();
+    }
+
+    public static int[] convertStringToIntArray(String input) {
+        // Split the input string into segments
+        String[] segments = input.split(",");
+
+        // Create an array to hold the result
+        int[] result = new int[segments.length * 2];
+
+        // Split each segment and store in the array
+        int index = 0;
+        for (String segment : segments) {
+            String[] parts = segment.split("-");
+            result[index++] = Integer.parseInt(parts[0]);
+            result[index++] = Integer.parseInt(parts[1]);
+        }
+
+        return result;
+    }
+
+    private String removeLastCharacter(String input) {
+        if (input == null || input.length() == 0) {
+            return input;
+        }
+        return input.substring(0, input.length() - 1);
     }
 }

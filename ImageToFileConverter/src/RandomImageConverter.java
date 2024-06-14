@@ -26,8 +26,8 @@ public class RandomImageConverter {
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
                         BufferedImage modifiedImage = ImageDisplay.adjustRGBColors(originalImage,random.nextInt(100),random.nextInt(100),random.nextInt(100));
-                        modifiedImage = ImageDisplay.resizeImage(modifiedImage, 100,133);
-                      //  modifiedImage = ImageDisplay.resizeImage(modifiedImage, 133,100);
+                        modifiedImage = ImageDisplay.resizeImage(modifiedImage, 120,160);
+                      //  modifiedImage = ImageDisplay.resizeImage(modifiedImage, 160,120);
                         modifiedImage = ImageDisplay.convertToClosestColors(modifiedImage,StaticValues.perfectColors);
                         String fileName = ""+random.nextInt(999999999)+".jpg";
                         File outputFile = new File(destinationFolder, fileName);
