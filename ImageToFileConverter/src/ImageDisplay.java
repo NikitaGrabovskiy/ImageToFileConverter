@@ -65,7 +65,7 @@ public class ImageDisplay extends JFrame {
         }*/
 
 
-        int imageNumber =3;
+        int imageNumber =7;
         //Choose the image file path
         String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/TODO/Converted/WithoutDots120by160/";
         // String imagePath = "/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/TODO/Converted/WithoutDots100by133/TODO/";
@@ -103,7 +103,7 @@ public class ImageDisplay extends JFrame {
            // lines.replace("\n\n","\n");
 
         //lines = lines.replace("C18","C32");
-        //lines = lines.replace("C28","C32");
+       // lines = lines.replace("C30","C32");
        // lines = lines.replace("C30","C31");
 
         //lines = lines.replace("C6","C18");

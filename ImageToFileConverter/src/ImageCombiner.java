@@ -47,7 +47,7 @@ public class ImageCombiner {
 
     public static void main(String[] args) {
         // Source and target directories
-        String sourceDir = "files/layersToCombine";
+        String sourceDir = "files/layersToCombine/TODO/Taylor";
         String targetDir = "files/resultOfCombiningLayer";
         File dir = new File(sourceDir);
 
@@ -63,7 +63,7 @@ public class ImageCombiner {
             return;
         }
 
-        // Sort files by name assuming names are in the format 1.png, 2.png, etc.
+        // Sort files by name assuming names are in the format 4.png, 2.png, etc.
         Arrays.sort(imageFiles, (f1, f2) -> {
             int n1 = Integer.parseInt(f1.getName().replaceAll("\\D+", ""));
             int n2 = Integer.parseInt(f2.getName().replaceAll("\\D+", ""));
@@ -72,10 +72,10 @@ public class ImageCombiner {
 
         // Create a map to specify colors manually
         Map<Integer, Integer> imageColorMap = new HashMap<>();
-        imageColorMap.put(1,6);
-        imageColorMap.put(2,18);
-        imageColorMap.put(3,17);
-        imageColorMap.put(4,30);
+        imageColorMap.put(1,5);
+        imageColorMap.put(2,23);
+        imageColorMap.put(3,15);
+        imageColorMap.put(4,31);
         imageColorMap.put(5,32);
         // Add more mappings as needed
 

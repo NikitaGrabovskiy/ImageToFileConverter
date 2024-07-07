@@ -10,15 +10,24 @@
 // Put them in functions 
 const float STEPS_IN_ONE_MM = 639.4604;
 
-const int paintDip = 4600;
-const int upPaintDip = 4700;
+const int paintDip = 2800;
+const int upPaintDip = 3200;
 
     //FOR Pannel
 //const int drawImageDip = 1220;
 
     //FOR Canvas 
-const int drawImageDip = 2200;
-const int upDrawImageDip = 2300;
+const int drawImageDip = 1030;
+const int upDrawImageDip = 1150;
+
+
+const int colorRow1 = 250;
+const int colorColumn1 = 52;
+
+
+const int imageStartX = 0;
+const int imageStartY = 31;
+
 
 // TODO: 
 
@@ -212,12 +221,11 @@ void singleMethodTomoveBrushToXYLocation(int newXCoordinate,int newYCoordinate){
 
 void dipToColor(short colorNumber){
 
-int colorRow1 = 255;
+
 int colorRow2 = colorRow1 + 40;
 int colorRow3 = colorRow2 + 40;
 int colorRow4 = colorRow3 + 40; 
 
-int colorColumn1 = 12;
 int colorColumn2 = colorColumn1+35;
 int colorColumn3 = colorColumn2+35;
 int colorColumn4 = colorColumn3+35;
@@ -365,13 +373,13 @@ void processAndDraw(const String &input) {
 
 
                 // FOR 120 x 160
-        int xForImage = (x*1.91); //+ 55;
-        int yForImage = (y*1.91); // + 39;
+        int xForImage = (x*1.91) + imageStartX;
+        int yForImage = (y*1.91) + imageStartY;
 
 
                 // FOR 100 x 133
-        //int xForImage = (x*2.3) + 55;
-        //int yForImage = (y*2.3) + 39;
+        //int xForImage = (x*2.3) + imageStartX;
+        //int yForImage = (y*2.3) + imageStartY;
 
         singleMethodTomoveBrushToXYLocation(xForImage,yForImage);
 

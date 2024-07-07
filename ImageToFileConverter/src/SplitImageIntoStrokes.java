@@ -48,11 +48,11 @@ public class SplitImageIntoStrokes {
             String colorLayer = splitSingleColorSimplified(image, colors.get(a), a, jFrame);
             result.append(colorLayer);
 
-            if(colorLayer!=null && !colorLayer.isEmpty()){
+/*            if(colorLayer!=null && !colorLayer.isEmpty()){
                 String reversed = reverseSegmentsInLines(colorLayer);
                 // TODO - remove dots
                 result.append(reversed);
-            }
+            }*/
         }
 
         return result.toString();

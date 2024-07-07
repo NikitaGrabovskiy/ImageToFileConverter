@@ -7,8 +7,8 @@ import java.util.Random;
 public class RandomImageConverter {
 
     public void generateRandomImages() {
-        File sourceFolder = new File("/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/Vertical/selectedDesigns/");
-       // File sourceFolder = new File("/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/Horizontal/");
+      //  File sourceFolder = new File("/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/Vertical/selectedDesigns/");
+        File sourceFolder = new File("/Users/nikita/Desktop/Projects/ImageToFileConverter/ImageToFileConverter/Documents/Designs/NewYork/Good/Horizontal/");
         File destinationFolder = new File("/Users/nikita/Desktop/randomlyGenerated");
        // File destinationDisplayFolder = new File("/Users/nikita/Desktop/display");
         Random random = new Random();
@@ -26,8 +26,8 @@ public class RandomImageConverter {
                     try {
                         BufferedImage originalImage = ImageIO.read(file);
                         BufferedImage modifiedImage = ImageDisplay.adjustRGBColors(originalImage,random.nextInt(100),random.nextInt(100),random.nextInt(100));
-                        modifiedImage = ImageDisplay.resizeImage(modifiedImage, 120,160);
-                      //  modifiedImage = ImageDisplay.resizeImage(modifiedImage, 160,120);
+                      //  modifiedImage = ImageDisplay.resizeImage(modifiedImage, 120,160);
+                        modifiedImage = ImageDisplay.resizeImage(modifiedImage, 160,120);
                         modifiedImage = ImageDisplay.convertToClosestColors(modifiedImage,StaticValues.perfectColors);
                         String fileName = ""+random.nextInt(999999999)+".jpg";
                         File outputFile = new File(destinationFolder, fileName);
