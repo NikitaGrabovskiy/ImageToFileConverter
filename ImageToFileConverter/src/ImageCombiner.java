@@ -47,7 +47,7 @@ public class ImageCombiner {
 
     public static void main(String[] args) {
         // Source and target directories
-        String sourceDir = "files/layersToCombine/TODO/Taylor";
+        String sourceDir = "files/layersToCombine/TODO/17EmpireState";
         String targetDir = "files/resultOfCombiningLayer";
         File dir = new File(sourceDir);
 
@@ -72,10 +72,10 @@ public class ImageCombiner {
 
         // Create a map to specify colors manually
         Map<Integer, Integer> imageColorMap = new HashMap<>();
-        imageColorMap.put(1,5);
-        imageColorMap.put(2,23);
-        imageColorMap.put(3,15);
-        imageColorMap.put(4,31);
+        imageColorMap.put(1,2);
+        imageColorMap.put(2,21);
+        imageColorMap.put(3,29);
+        imageColorMap.put(4,25);
         imageColorMap.put(5,32);
         // Add more mappings as needed
 
